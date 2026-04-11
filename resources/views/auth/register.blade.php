@@ -16,6 +16,24 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        <!-- Student ID -->
+        <div class="mt-4">
+            <x-input-label for="student_id" :value="__('Student/Staff ID (optional)')" />
+            <x-text-input id="student_id" class="block mt-1 w-full" type="text" name="student_id"
+                          :value="old('student_id')" autocomplete="off"
+                          placeholder="e.g. 22/U/1234" />
+            <x-input-error :messages="$errors->get('student_id')" class="mt-2" />
+        </div>
+
+        <!-- Phone Number -->
+        <div class="mt-4">
+            <x-input-label for="phone_number" :value="__('Phone Number (optional)')" />
+            <x-text-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number"
+                          :value="old('phone_number')"
+                          placeholder="e.g. 0701234567" />
+            <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
+        </div>
+
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />

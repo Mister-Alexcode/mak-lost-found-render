@@ -78,6 +78,16 @@
                               placeholder="Describe the item in detail — any unique features, serial number, stickers, etc.">{{ old('description') }}</textarea>
                 </div>
 
+                <x-map-picker />
+
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Reward Offer <span class="text-gray-400 font-normal">(optional)</span></label>
+                    <input type="text" name="reward_offer" value="{{ old('reward_offer') }}"
+                           class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="e.g. UGX 20,000 airtime, treat to lunch, etc.">
+                    <p class="text-xs text-gray-400 mt-1">A thank-you gesture to whoever finds and returns your item. Separate from reward points.</p>
+                </div>
+
                 <div class="mt-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Photo</label>
                     <input type="file" name="photo" accept="image/*"

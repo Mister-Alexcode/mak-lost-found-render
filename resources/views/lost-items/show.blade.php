@@ -35,9 +35,20 @@
                         </span>
                     </p>
                     <p><span class="font-medium">Description:</span> {{ $lostItem->description }}</p>
+                    @if($lostItem->reward_offer)
+                    <p class="mt-2 text-green-700 font-medium bg-green-50 px-3 py-2 rounded">
+                        Reward offered: {{ $lostItem->reward_offer }}
+                    </p>
+                    @endif
                 </div>
             </div>
         </div>
+
+        @if($lostItem->latitude && $lostItem->longitude)
+        <div class="bg-white rounded-lg shadow p-6">
+            <x-map-picker :latitude="$lostItem->latitude" :longitude="$lostItem->longitude" :readonly="true" />
+        </div>
+        @endif
 
         @if($matches->count() > 0)
         <div class="bg-white rounded-lg shadow p-6">
@@ -61,7 +72,7 @@
                         {{ $match->confidence_score }}%
                     </span>
                     <p class="text-xs text-gray-400">match</p>
-                    @if($match->claim_status !== 'approved')
+                    @if($match->match_status !== 'confirmed' && !$match->claims->where('claim_status', 'approved')->count())
                     <a href="{{ route('claims.create', $match->id) }}"
                        class="mt-2 inline-block bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">
                         Claim Item

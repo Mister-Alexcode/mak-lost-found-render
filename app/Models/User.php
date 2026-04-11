@@ -10,12 +10,28 @@ class User extends Authenticatable {
 
     protected $fillable = [
         'name', 'email', 'password',
-        'role', 'phone_number', 'student_id', 'reward_points'
+        'role', 'phone_number', 'student_id', 'reward_points',
+        'notification_preferences'
     ];
 
     protected $hidden = ['password', 'remember_token'];
 
-    protected $casts = ['email_verified_at' => 'datetime', 'password' => 'hashed'];
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'notification_preferences' => 'array',
+    ];
+
+    public function getNotificationChannels(): array
+    {
+        $prefs = $this->notification_preferences ?? [];
+        // in-app is always enabled
+        $channels = ['in-app'];
+        if (!empty($prefs['email'])) $channels[] = 'email';
+        if (!empty($prefs['sms'])) $channels[] = 'sms';
+        if (!empty($prefs['whatsapp'])) $channels[] = 'whatsapp';
+        return $channels;
+    }
 
     public function isAdmin(): bool { return $this->role === 'admin'; }
     public function lostItems() { return $this->hasMany(LostItem::class); }

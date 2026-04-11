@@ -54,6 +54,15 @@
                               class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ old('description', $lostItem->description) }}</textarea>
                 </div>
 
+                <x-map-picker :latitude="$lostItem->latitude" :longitude="$lostItem->longitude" />
+
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Reward Offer <span class="text-gray-400 font-normal">(optional)</span></label>
+                    <input type="text" name="reward_offer" value="{{ old('reward_offer', $lostItem->reward_offer) }}"
+                           class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="e.g. UGX 20,000 airtime, treat to lunch, etc.">
+                </div>
+
                 <div class="mt-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Photo</label>
                     @if($lostItem->photo)
