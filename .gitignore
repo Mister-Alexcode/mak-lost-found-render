@@ -18,3 +18,6 @@ yarn-error.log
 /.idea
 /.vscode
 /docs
+/database/*.sql
+/database/backups
+/.claude
