@@ -1,15 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ $isAdmin ? 'All Lost Item Reports' : 'My Lost Items' }}
-            </h2>
-            @if(!$isAdmin)
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">All Lost Item Reports</h2>
             <a href="{{ route('lost-items.create') }}"
-               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
                 + Report Lost Item
             </a>
-            @endif
         </div>
     </x-slot>
 
@@ -17,13 +13,11 @@
 
         @if($lostItems->isEmpty())
             <div class="bg-white p-8 rounded shadow text-center text-gray-500">
-                <p class="text-lg">{{ $isAdmin ? 'No lost items reported yet.' : 'You have not reported any lost items yet.' }}</p>
-                @if(!$isAdmin)
+                <p class="text-lg">No lost items reported yet.</p>
                 <a href="{{ route('lost-items.create') }}"
                    class="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
                     Report a Lost Item
                 </a>
-                @endif
             </div>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -38,9 +32,7 @@
                         </div>
                     @endif
                     <h3 class="font-bold text-lg">{{ $item->item_name }}</h3>
-                    @if($isAdmin)
-                        <p class="text-xs text-purple-600 font-medium">Reporter: {{ $item->user->name }}</p>
-                    @endif
+                    <p class="text-xs text-purple-600 font-medium">Reported by: {{ $item->user->name }}</p>
                     <p class="text-sm text-gray-500">Category: {{ $item->category }}</p>
                     <p class="text-sm text-gray-500">Location: {{ $item->location_lost }}</p>
                     <p class="text-sm text-gray-500">Date: {{ $item->date_lost }}</p>
@@ -57,12 +49,11 @@
                            class="text-sm bg-blue-50 text-blue-600 px-3 py-1 rounded hover:bg-blue-100">
                             View
                         </a>
-                        @if(!$isAdmin)
+                        @if($isAdmin || $item->user_id === Auth::id())
                         <a href="{{ route('lost-items.edit', $item) }}"
                            class="text-sm bg-gray-50 text-gray-600 px-3 py-1 rounded hover:bg-gray-100">
                             Edit
                         </a>
-                        @endif
                         <form method="POST" action="{{ route('lost-items.destroy', $item) }}"
                               onsubmit="return confirm('Delete this report?')">
                             @csrf @method('DELETE')
@@ -70,6 +61,7 @@
                                 Delete
                             </button>
                         </form>
+                        @endif
                     </div>
                 </div>
                 @endforeach

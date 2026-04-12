@@ -27,9 +27,20 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        if (Auth::user()->isBlocked()) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()->route('login')->withErrors([
+                'email' => 'This account has been blocked. Please contact an administrator.',
+            ]);
+        }
+
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $home = Auth::user()->isAdmin() ? '/admin' : RouteServiceProvider::HOME;
+
+        return redirect()->intended($home);
     }
 
     /**

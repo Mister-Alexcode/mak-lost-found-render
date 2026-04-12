@@ -24,7 +24,7 @@ class AdminController extends Controller
             'returned'          => LostItem::where('status', 'returned')->count(),
             'pending_redemptions' => Redemption::where('status', 'pending')->count(),
         ];
-        $recentClaims = Claim::with(['match.lostItem', 'match.foundItem', 'claimant'])
+        $recentClaims = Claim::with(['match.lostItem.user', 'match.foundItem.user', 'claimant'])
             ->latest()->take(5)->get();
         return view('admin.dashboard', compact('stats', 'recentClaims'));
     }
@@ -43,13 +43,17 @@ class AdminController extends Controller
 
     public function claims()
     {
-        $claims = Claim::with(['match.lostItem', 'match.foundItem', 'claimant'])
+        $claims = Claim::with(['match.lostItem.user', 'match.foundItem.user', 'claimant'])
             ->latest()->paginate(20);
         return view('admin.claims', compact('claims'));
     }
 
     public function approveClaim(Claim $claim)
     {
+        if ($claim->claim_status !== 'pending' && $claim->claim_status !== 'under_review') {
+            return back()->with('error', 'This claim has already been resolved.');
+        }
+
         $claim->update([
             'claim_status' => 'approved',
             'admin_id'     => Auth::id(),
@@ -75,14 +79,16 @@ class AdminController extends Controller
         NotificationDispatcher::send(
             $claimant,
             'claim_approved',
-            'Your claim has been approved! Your item has been marked as returned. You earned 20 reward points.'
+            'Your claim has been approved! Your item has been marked as returned. You earned 20 reward points.',
+            route('claims.show', $claim->id)
         );
 
         // Notify finder
         NotificationDispatcher::send(
             $claim->match->foundItem->user,
             'claim_approved',
-            'The claim for the item you found (' . $claim->match->foundItem->item_name . ') has been approved. Thank you for your honesty!'
+            'The claim for the item you found (' . $claim->match->foundItem->item_name . ') has been approved. Thank you for your honesty!',
+            route('found-items.show', $claim->match->foundItem->id)
         );
 
         return back()->with('success', 'Claim approved and item marked as returned.');
@@ -102,7 +108,8 @@ class AdminController extends Controller
             $claim->claimant,
             'claim_rejected',
             'Your claim for ' . $claim->match->lostItem->item_name
-                . ' was rejected.' . ($request->reason ? ' Reason: ' . $request->reason : '')
+                . ' was rejected.' . ($request->reason ? ' Reason: ' . $request->reason : ''),
+            route('claims.show', $claim->id)
         );
 
         return back()->with('success', 'Claim rejected.');
@@ -112,6 +119,68 @@ class AdminController extends Controller
     {
         $users = User::where('role', 'user')->orderByDesc('reward_points')->paginate(20);
         return view('admin.users', compact('users'));
+    }
+
+    public function editUser(User $user)
+    {
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.users')->with('error', 'Admin accounts cannot be edited here.');
+        }
+        return view('admin.user-edit', compact('user'));
+    }
+
+    public function updateUser(Request $request, User $user)
+    {
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.users')->with('error', 'Admin accounts cannot be edited here.');
+        }
+
+        $data = $request->validate([
+            'name'          => 'required|string|max:255',
+            'email'         => 'required|email|max:255|unique:users,email,' . $user->id,
+            'phone_number'  => 'nullable|string|max:30',
+            'student_id'    => 'nullable|string|max:50',
+            'reward_points' => 'required|integer|min:0',
+        ]);
+
+        $user->update($data);
+
+        return redirect()->route('admin.users')->with('success', 'User updated.');
+    }
+
+    public function blockUser(User $user)
+    {
+        if ($user->isAdmin()) {
+            return back()->with('error', 'You cannot block an admin account.');
+        }
+        if ($user->id === Auth::id()) {
+            return back()->with('error', 'You cannot block yourself.');
+        }
+
+        $user->update(['is_blocked' => true, 'blocked_at' => now()]);
+
+        return back()->with('success', $user->name . ' has been blocked.');
+    }
+
+    public function unblockUser(User $user)
+    {
+        $user->update(['is_blocked' => false, 'blocked_at' => null]);
+        return back()->with('success', $user->name . ' has been unblocked.');
+    }
+
+    public function destroyUser(User $user)
+    {
+        if ($user->isAdmin()) {
+            return back()->with('error', 'You cannot delete an admin account.');
+        }
+        if ($user->id === Auth::id()) {
+            return back()->with('error', 'You cannot delete yourself.');
+        }
+
+        $name = $user->name;
+        $user->delete();
+
+        return redirect()->route('admin.users')->with('success', $name . ' deleted.');
     }
 
     public function redemptions()
@@ -135,7 +204,7 @@ class AdminController extends Controller
 
     public function updateItemStatus(Request $request, string $type, int $id)
     {
-        $request->validate(['status' => 'required|in:active,returned,expired,donated']);
+        $request->validate(['status' => 'required|in:active,returned,expired']);
 
         if ($type === 'lost') {
             LostItem::findOrFail($id)->update(['status' => $request->status]);

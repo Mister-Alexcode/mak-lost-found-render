@@ -1,15 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ $isAdmin ? 'All Found Item Reports' : 'My Found Items' }}
-            </h2>
-            @if(!$isAdmin)
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">All Found Item Reports</h2>
             <a href="{{ route('found-items.create') }}"
                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
                 + Report Found Item
             </a>
-            @endif
         </div>
     </x-slot>
 
@@ -17,14 +13,12 @@
 
         @if($foundItems->isEmpty())
             <div class="bg-white p-8 rounded shadow text-center text-gray-500">
-                <p class="text-lg">{{ $isAdmin ? 'No found items reported yet.' : 'You have not reported any found items yet.' }}</p>
-                @if(!$isAdmin)
+                <p class="text-lg">No found items reported yet.</p>
                 <p class="text-sm mt-2">Help someone reunite with their belongings — earn 10 reward points!</p>
                 <a href="{{ route('found-items.create') }}"
                    class="mt-4 inline-block bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
                     Report a Found Item
                 </a>
-                @endif
             </div>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -39,9 +33,7 @@
                         </div>
                     @endif
                     <h3 class="font-bold text-lg">{{ $item->item_name }}</h3>
-                    @if($isAdmin)
-                        <p class="text-xs text-purple-600 font-medium">Reporter: {{ $item->user->name }}</p>
-                    @endif
+                    <p class="text-xs text-purple-600 font-medium">Reported by: {{ $item->user->name }}</p>
                     <p class="text-sm text-gray-500">Category: {{ $item->category }}</p>
                     <p class="text-sm text-gray-500">Location: {{ $item->location_found }}</p>
                     <p class="text-sm text-gray-500">Date: {{ $item->date_found }}</p>
@@ -50,11 +42,29 @@
                         {{ $item->status === 'active' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700' }}">
                         {{ ucfirst($item->status) }}
                     </span>
-                    <div class="mt-3 flex gap-2">
+                    <div class="mt-3 flex flex-wrap gap-2">
                         <a href="{{ route('found-items.show', $item) }}"
                            class="text-sm bg-green-50 text-green-600 px-3 py-1 rounded hover:bg-green-100">
                             View
                         </a>
+                        @if($item->user_id !== Auth::id() && $item->status === 'active')
+                        <a href="{{ route('claims.claim-found', $item) }}"
+                           class="text-sm bg-purple-50 text-purple-600 px-3 py-1 rounded hover:bg-purple-100">
+                            Claim
+                        </a>
+                        @if($item->is_high_value)
+                        <span class="text-sm bg-amber-50 text-amber-700 px-3 py-1 rounded"
+                              title="High-value items are verified by an admin. Please file a claim.">
+                            Admin-mediated
+                        </span>
+                        @else
+                        <a href="{{ route('messages.direct', ['user' => $item->user_id, 'about' => $item->id]) }}"
+                           class="text-sm bg-blue-50 text-blue-600 px-3 py-1 rounded hover:bg-blue-100">
+                            Chat
+                        </a>
+                        @endif
+                        @endif
+                        @if($isAdmin || $item->user_id === Auth::id())
                         <a href="{{ route('found-items.edit', $item) }}"
                            class="text-sm bg-gray-50 text-gray-600 px-3 py-1 rounded hover:bg-gray-100">
                             Edit
@@ -66,6 +76,7 @@
                                 Delete
                             </button>
                         </form>
+                        @endif
                     </div>
                 </div>
                 @endforeach

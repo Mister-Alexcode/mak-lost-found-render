@@ -4,44 +4,85 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center gap-2">
-                    <a href="{{ Auth::check() ? route('dashboard') : url('/') }}" class="flex items-center gap-2">
-                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
-                        </div>
+                    <a href="{{ url('/') }}" class="flex items-center gap-2">
+                        <img src="{{ asset('logo.svg') }}" alt="MAK Lost & Found" class="w-9 h-9">
                         <span class="font-bold text-gray-800 hidden sm:inline">MAK Lost & Found</span>
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-1 sm:-my-px sm:ms-6 sm:flex">
+                @php
+                    $navBase = 'group inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-150';
+                    $navIdle = 'text-gray-600 hover:text-blue-700 hover:bg-blue-50';
+                    $navActive = 'text-white bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 shadow-sm shadow-blue-500/30';
+                @endphp
+                @auth
+                @php
+                    $unreadCount = \App\Models\ItemNotification::where('user_id', Auth::id())
+                        ->where('is_read', false)->count();
+                    $unreadMessagesCount = \App\Models\Message::where('receiver_id', Auth::id())
+                        ->where('is_read', false)->count();
+                @endphp
+                @endauth
+                <div class="hidden space-x-1 sm:ms-6 sm:flex sm:items-center">
                     @auth
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <a href="{{ route('dashboard') }}"
+                       class="{{ $navBase }} {{ request()->routeIs('dashboard') ? $navActive : $navIdle }}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
                         Dashboard
-                    </x-nav-link>
-                    <x-nav-link :href="route('lost-items.index')" :active="request()->routeIs('lost-items.*')">
+                    </a>
+                    <a href="{{ route('lost-items.index') }}"
+                       class="{{ $navBase }} {{ request()->routeIs('lost-items.*') ? $navActive : $navIdle }}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
                         Lost Items
-                    </x-nav-link>
-                    <x-nav-link :href="route('found-items.index')" :active="request()->routeIs('found-items.*')">
+                    </a>
+                    <a href="{{ route('found-items.index') }}"
+                       class="{{ $navBase }} {{ request()->routeIs('found-items.*') ? $navActive : $navIdle }}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
                         Found Items
-                    </x-nav-link>
+                    </a>
                     @endauth
-                    <x-nav-link :href="route('search.index')" :active="request()->routeIs('search.*')">
+                    <a href="{{ route('search.index') }}"
+                       class="{{ $navBase }} {{ request()->routeIs('search.*') ? $navActive : $navIdle }}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
                         Search
-                    </x-nav-link>
+                    </a>
                     @auth
-                    <x-nav-link :href="route('claims.index')" :active="request()->routeIs('claims.*')">
+                    <a href="{{ route('claims.index') }}"
+                       class="{{ $navBase }} {{ request()->routeIs('claims.*') ? $navActive : $navIdle }}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
                         Claims
-                    </x-nav-link>
-                    <x-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">
+                    </a>
+                    <a href="{{ route('messages.index') }}"
+                       class="{{ $navBase }} {{ request()->routeIs('messages.*') ? $navActive : $navIdle }} relative">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
                         Messages
-                    </x-nav-link>
+                        @if($unreadMessagesCount > 0)
+                        <span class="ml-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
+                            {{ $unreadMessagesCount > 9 ? '9+' : $unreadMessagesCount }}
+                        </span>
+                        @endif
+                    </a>
                     @if(Auth::user()->isAdmin())
-                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')"
-                                class="!text-purple-600 !border-purple-500">
+                    <a href="{{ route('admin.dashboard') }}"
+                       class="group inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-150 {{ request()->routeIs('admin.*') ? 'text-white bg-gradient-to-r from-purple-500 via-purple-600 to-pink-600 shadow-sm shadow-purple-500/30' : 'text-purple-600 hover:text-purple-700 hover:bg-purple-50' }}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
                         Admin
-                    </x-nav-link>
+                    </a>
                     @endif
                     @endauth
                 </div>
@@ -50,11 +91,6 @@
             <!-- Right Side -->
             <div class="hidden sm:flex sm:items-center sm:gap-3">
                 @auth
-                @php
-                    $unreadCount = \App\Models\ItemNotification::where('user_id', Auth::id())
-                        ->where('is_read', false)->count();
-                @endphp
-
                 {{-- Points Badge --}}
                 <a href="{{ route('leaderboard.index') }}"
                    class="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium
@@ -165,7 +201,9 @@
             <x-responsive-nav-link :href="route('search.index')" :active="request()->routeIs('search.*')">Search</x-responsive-nav-link>
             @auth
             <x-responsive-nav-link :href="route('claims.index')" :active="request()->routeIs('claims.*')">Claims</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">Messages</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">
+                Messages @if($unreadMessagesCount > 0) <span class="ml-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">{{ $unreadMessagesCount }}</span> @endif
+            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('leaderboard.index')" :active="request()->routeIs('leaderboard.*')">Leaderboard</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('redemptions.index')" :active="request()->routeIs('redemptions.*')">Redeem Points</x-responsive-nav-link>
             @if(Auth::user()->isAdmin())

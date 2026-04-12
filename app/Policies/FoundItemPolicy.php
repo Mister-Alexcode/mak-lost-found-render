@@ -7,7 +7,7 @@ use App\Models\User;
 class FoundItemPolicy
 {
     public function view(User $user, FoundItem $foundItem): bool {
-        return $user->id === $foundItem->user_id || $user->isAdmin();
+        return true;
     }
     public function update(User $user, FoundItem $foundItem): bool {
         return $user->id === $foundItem->user_id;

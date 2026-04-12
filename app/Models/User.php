@@ -11,21 +11,28 @@ class User extends Authenticatable {
     protected $fillable = [
         'name', 'email', 'password',
         'role', 'phone_number', 'student_id', 'reward_points',
-        'notification_preferences'
+        'notification_preferences',
+        'is_blocked', 'blocked_at',
     ];
 
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'email_verified_at'  => 'datetime',
+        'phone_verified_at'  => 'datetime',
+        'blocked_at'         => 'datetime',
+        'password'           => 'hashed',
         'notification_preferences' => 'array',
+        'is_blocked'         => 'boolean',
     ];
+
+    public function isBlocked(): bool { return (bool) $this->is_blocked; }
 
     public function getNotificationChannels(): array
     {
-        $prefs = $this->notification_preferences ?? [];
-        // in-app is always enabled
+        // Users who have never touched notification settings get email + whatsapp
+        // on by default so match/claim alerts actually reach them.
+        $prefs = $this->notification_preferences ?? ['email' => true, 'whatsapp' => true];
         $channels = ['in-app'];
         if (!empty($prefs['email'])) $channels[] = 'email';
         if (!empty($prefs['sms'])) $channels[] = 'sms';

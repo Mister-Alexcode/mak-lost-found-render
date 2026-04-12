@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
+            {{ __("Update your account's profile information, email address, and phone number.") }}
         </p>
     </header>
 
@@ -45,6 +45,30 @@
                     @endif
                 </div>
             @endif
+        </div>
+
+        <div>
+            <x-input-label for="phone_number" :value="__('Phone Number (WhatsApp)')" />
+            <x-text-input id="phone_number" name="phone_number" type="tel" class="mt-1 block w-full"
+                          :value="old('phone_number', $user->phone_number)"
+                          placeholder="e.g. 0701234567 or +256701234567" />
+            <p class="text-xs text-gray-500 mt-1">Used for WhatsApp notifications and account recovery.</p>
+            <x-input-error class="mt-2" :messages="$errors->get('phone_number')" />
+            @if($user->phone_number && $user->phone_verified_at)
+                <p class="text-xs text-green-600 mt-1">Verified</p>
+            @elseif($user->phone_number)
+                <p class="text-xs text-amber-600 mt-1">Not verified — enable WhatsApp notifications in
+                    <a href="{{ route('notification-settings.edit') }}" class="underline">notification settings</a> to verify.
+                </p>
+            @endif
+        </div>
+
+        <div>
+            <x-input-label for="student_id" :value="__('Student/Staff ID')" />
+            <x-text-input id="student_id" name="student_id" type="text" class="mt-1 block w-full"
+                          :value="old('student_id', $user->student_id)"
+                          placeholder="e.g. 22/U/1234" />
+            <x-input-error class="mt-2" :messages="$errors->get('student_id')" />
         </div>
 
         <div class="flex items-center gap-4">

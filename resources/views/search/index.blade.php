@@ -29,15 +29,21 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
-                    <div class="flex gap-3">
-                        <label class="flex items-center gap-1 text-sm">
-                            <input type="radio" name="type" value="lost" {{ $type === 'lost' ? 'checked' : '' }}> Lost Items
+                    <div class="flex gap-1">
+                        <label class="cursor-pointer px-3 py-1.5 rounded-lg text-sm font-medium transition
+                            {{ $type === 'lost' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                            <input type="radio" name="type" value="lost" class="hidden" onchange="this.form.submit()"
+                                {{ $type === 'lost' ? 'checked' : '' }}> Lost Items
                         </label>
-                        <label class="flex items-center gap-1 text-sm">
-                            <input type="radio" name="type" value="found" {{ $type === 'found' ? 'checked' : '' }}> Found Items
+                        <label class="cursor-pointer px-3 py-1.5 rounded-lg text-sm font-medium transition
+                            {{ $type === 'found' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                            <input type="radio" name="type" value="found" class="hidden" onchange="this.form.submit()"
+                                {{ $type === 'found' ? 'checked' : '' }}> Found Items
                         </label>
-                        <label class="flex items-center gap-1 text-sm">
-                            <input type="radio" name="type" value="both" {{ $type === 'both' ? 'checked' : '' }}> Both
+                        <label class="cursor-pointer px-3 py-1.5 rounded-lg text-sm font-medium transition
+                            {{ $type === 'both' ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                            <input type="radio" name="type" value="both" class="hidden" onchange="this.form.submit()"
+                                {{ $type === 'both' ? 'checked' : '' }}> Both
                         </label>
                     </div>
                     <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 text-sm">
@@ -239,19 +245,15 @@
         </div>
         @endif
 
-        @if(($type === 'lost' || $type === 'both') && $lostItems->count() === 0 &&
-            ($type === 'found' || $type === 'both') && $foundItems->count() === 0)
+        @php
+            $hasLost = ($type === 'lost' || $type === 'both') && $lostItems instanceof \Illuminate\Pagination\LengthAwarePaginator && $lostItems->count() > 0;
+            $hasFound = ($type === 'found' || $type === 'both') && $foundItems instanceof \Illuminate\Pagination\LengthAwarePaginator && $foundItems->count() > 0;
+        @endphp
+
+        @if(!$hasLost && !$hasFound)
         <div class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
             <p class="text-lg">No items found matching your search.</p>
             <p class="text-sm mt-1">Try a different keyword, category, or location.</p>
-        </div>
-        @elseif($type === 'lost' && $lostItems->count() === 0)
-        <div class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
-            <p>No lost items match your search.</p>
-        </div>
-        @elseif($type === 'found' && $foundItems->count() === 0)
-        <div class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
-            <p>No found items match your search.</p>
         </div>
         @endif
 

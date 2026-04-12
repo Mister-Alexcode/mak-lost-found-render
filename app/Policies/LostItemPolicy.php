@@ -7,7 +7,7 @@ use App\Models\User;
 class LostItemPolicy
 {
     public function view(User $user, LostItem $lostItem): bool {
-        return $user->id === $lostItem->user_id || $user->isAdmin();
+        return true;
     }
     public function update(User $user, LostItem $lostItem): bool {
         return $user->id === $lostItem->user_id;

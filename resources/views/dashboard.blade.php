@@ -1,14 +1,10 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Welcome back, {{ Auth::user()->name }}
-            @if(Auth::user()->isAdmin())
-                <span class="ml-2 text-sm bg-purple-100 text-purple-700 px-2 py-0.5 rounded">Admin</span>
-            @endif
-        </h2>
-    </x-slot>
-
     <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+
+        <x-section-header
+            icon="home"
+            title="Welcome, {{ Auth::user()->name }}"
+            subtitle="{{ Auth::user()->isAdmin() ? 'Admin control center' : 'Report items, track claims, earn rewards' }}" />
 
         {{-- Admin: Pending Claims Alert --}}
         @if(Auth::user()->isAdmin() && $pendingClaims > 0)
@@ -113,6 +109,98 @@
                 @endif
             </a>
         </div>
+
+        {{-- My Lost Items --}}
+        @if($myLostItems->count() > 0)
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-gray-800">My Lost Items</h3>
+                <a href="{{ route('lost-items.index') }}" class="text-sm text-blue-600 hover:underline">View All Lost Items</a>
+            </div>
+            <div class="space-y-2">
+                @foreach($myLostItems as $item)
+                <a href="{{ route('lost-items.show', $item) }}"
+                   class="flex items-center justify-between p-3 rounded-lg border hover:bg-blue-50 transition">
+                    <div class="flex items-center gap-3">
+                        @if($item->photo)
+                            <img src="{{ asset('storage/' . $item->photo) }}" class="w-10 h-10 rounded object-cover" alt="">
+                        @else
+                            <div class="w-10 h-10 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs">N/A</div>
+                        @endif
+                        <div>
+                            <p class="font-medium text-sm">{{ $item->item_name }}</p>
+                            <p class="text-xs text-gray-500">{{ $item->location_lost }} · {{ $item->date_lost }}</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 text-xs rounded {{ $item->status === 'active' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700' }}">
+                        {{ ucfirst($item->status) }}
+                    </span>
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        {{-- My Found Items --}}
+        @if($myFoundItems->count() > 0)
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-gray-800">My Found Items</h3>
+                <a href="{{ route('found-items.index') }}" class="text-sm text-green-600 hover:underline">View All Found Items</a>
+            </div>
+            <div class="space-y-2">
+                @foreach($myFoundItems as $item)
+                <a href="{{ route('found-items.show', $item) }}"
+                   class="flex items-center justify-between p-3 rounded-lg border hover:bg-green-50 transition">
+                    <div class="flex items-center gap-3">
+                        @if($item->photo)
+                            <img src="{{ asset('storage/' . $item->photo) }}" class="w-10 h-10 rounded object-cover" alt="">
+                        @else
+                            <div class="w-10 h-10 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs">N/A</div>
+                        @endif
+                        <div>
+                            <p class="font-medium text-sm">{{ $item->item_name }}</p>
+                            <p class="text-xs text-gray-500">{{ $item->location_found }} · {{ $item->date_found }}</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 text-xs rounded {{ $item->status === 'active' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700' }}">
+                        {{ ucfirst($item->status) }}
+                    </span>
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        {{-- Items Returned to Me --}}
+        @if($myReturnedItems->count() > 0)
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-gray-800">Returned to Me</h3>
+            </div>
+            <div class="space-y-2">
+                @foreach($myReturnedItems as $item)
+                <a href="{{ route('lost-items.show', $item) }}"
+                   class="flex items-center justify-between p-3 rounded-lg border hover:bg-purple-50 transition">
+                    <div class="flex items-center gap-3">
+                        @if($item->photo)
+                            <img src="{{ asset('storage/' . $item->photo) }}" class="w-10 h-10 rounded object-cover" alt="">
+                        @else
+                            <div class="w-10 h-10 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs">N/A</div>
+                        @endif
+                        <div>
+                            <p class="font-medium text-sm">{{ $item->item_name }}</p>
+                            <p class="text-xs text-gray-500">{{ $item->location_lost }} · {{ $item->date_lost }}</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 text-xs rounded bg-green-100 text-green-700">
+                        Returned
+                    </span>
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
 
         {{-- Reward Points Progress (users only) --}}
         @php

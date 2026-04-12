@@ -48,7 +48,7 @@ The `users` table has a `role` column (`'user'` or `'admin'`). The `User` model 
 ### Core Flow
 
 1. A user reports a **LostItem** or **FoundItem**.
-2. On save, `MatchingService` (`app/Services/MatchingService.php`) scores every active item of the opposite type against it. Scoring is rule-based: category (30pts), color (20pts), location similarity (20pts), date within 7 days (15pts), brand (15pts). Threshold to create an `ItemMatch` is ≥75 points.
+2. On save, `MatchingService` (`app/Services/MatchingService.php`) scores every active item of the opposite type against it. Scoring is semantic-aware (max 100): category (25), color (15, synonym-aware), brand (10, alias-aware), location (15, campus-aware), date (10, graduated), description (15, cross-field text analysis), item name (10, fuzzy + keyword). Threshold to create an `ItemMatch` is ≥55 points, capped at 99.
 3. Matched items get an `ItemNotification` sent to the reporting user.
 4. A user files a **Claim** against a match with verification details.
 5. An admin approves or rejects the claim. Approval marks both items `returned`, awards 20 `reward_points` to the claimant, and creates a `Reward` record.

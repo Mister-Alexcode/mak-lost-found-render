@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -16,6 +17,20 @@ Route::middleware('guest')->group(function () {
                 ->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store']);
+
+    // OTP verification for registration
+    Route::get('register/verify', [OtpController::class, 'showVerifyForm'])->name('register.verify.form');
+    Route::post('register/verify', [OtpController::class, 'verifyRegistration'])->name('register.verify');
+    Route::post('register/verify/resend', [OtpController::class, 'resendRegistration'])->middleware('throttle:3,1')->name('register.verify.resend');
+
+    // Password reset via OTP (email or WhatsApp)
+    Route::get('forgot-password/otp', [OtpController::class, 'showForgotForm'])->name('password.otp.request');
+    Route::post('forgot-password/otp', [OtpController::class, 'sendResetOtp'])->name('password.otp.send');
+    Route::get('forgot-password/otp/verify', [OtpController::class, 'showResetOtpForm'])->name('password.otp.verify.form');
+    Route::post('forgot-password/otp/verify', [OtpController::class, 'verifyResetOtp'])->name('password.otp.verify');
+    Route::post('forgot-password/otp/resend', [OtpController::class, 'resendResetOtp'])->middleware('throttle:3,1')->name('password.otp.resend');
+    Route::get('reset-password/otp', [OtpController::class, 'showNewPasswordForm'])->name('password.otp.new');
+    Route::post('reset-password/otp', [OtpController::class, 'resetPassword'])->name('password.otp.reset');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
                 ->name('login');

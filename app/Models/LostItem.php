@@ -10,7 +10,7 @@ class LostItem extends Model {
     protected $fillable = [
         'user_id', 'item_name', 'category', 'description',
         'color', 'brand', 'location_lost', 'latitude', 'longitude',
-        'date_lost', 'photo', 'status', 'tracking_id', 'reward_offer'
+        'date_lost', 'photo', 'status', 'is_high_value', 'tracking_id', 'reward_offer'
     ];
 
     public function user() { return $this->belongsTo(User::class); }

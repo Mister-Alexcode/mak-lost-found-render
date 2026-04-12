@@ -10,13 +10,26 @@
 
     <div class="py-8 max-w-3xl mx-auto sm:px-6 lg:px-8">
 
+        @isset($contextItem)
+        @if($contextItem)
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-sm text-blue-800">
+            <p class="font-medium">Re: {{ $contextItem->item_name }} ({{ $contextItem->tracking_id }})</p>
+            <p class="text-xs mt-1">Peer chat for a non-high-value item. Coordinate the return directly. For valuable items, file a claim so an admin can mediate.</p>
+        </div>
+        @endif
+        @endisset
+
         <div class="bg-gray-50 border rounded-lg p-3 mb-4 text-sm text-gray-600 flex items-center gap-3">
             <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-sm font-bold">
                 {{ strtoupper(substr($user->name, 0, 1)) }}
             </div>
             <div>
                 <span class="font-medium text-gray-800">{{ $user->name }}</span>
+                @if(!$user->isAdmin())
                 <span class="text-gray-400 ml-2">{{ $user->email }}</span>
+                @else
+                <span class="text-xs text-purple-500 ml-2">System Administrator</span>
+                @endif
             </div>
         </div>
 
@@ -42,6 +55,11 @@
         {{-- Send Message --}}
         <form method="POST" action="{{ route('messages.direct.store', $user) }}">
             @csrf
+            @isset($contextItem)
+            @if($contextItem)
+            <input type="hidden" name="about" value="{{ $contextItem->id }}">
+            @endif
+            @endisset
             @if($errors->any())
                 <p class="text-red-600 text-sm mb-2">{{ $errors->first() }}</p>
             @endif

@@ -1,7 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\FoundItem;
 use App\Models\ItemMatch;
+use App\Models\ItemNotification;
 use App\Models\Message;
 use App\Models\User;
 use App\Services\NotificationDispatcher;
@@ -24,31 +26,15 @@ class MessageController extends Controller
             ->with(['lostItem.user', 'foundItem.user'])
             ->get();
 
-        // Get direct conversations (messages not tied to a match — admin messaging)
-        $directConversations = collect();
-        if ($isAdmin) {
-            // Find users the admin has exchanged direct messages with
-            $directUserIds = Message::whereNull('match_id')
-                ->whereNull('claim_id')
-                ->where(function ($q) use ($userId) {
-                    $q->where('sender_id', $userId)->orWhere('receiver_id', $userId);
-                })
-                ->get()
-                ->map(fn($m) => $m->sender_id === $userId ? $m->receiver_id : $m->sender_id)
-                ->unique();
-            $directConversations = User::whereIn('id', $directUserIds)->get();
-        } else {
-            // Check if admin has messaged this user directly
-            $directUserIds = Message::whereNull('match_id')
-                ->whereNull('claim_id')
-                ->where(function ($q) use ($userId) {
-                    $q->where('sender_id', $userId)->orWhere('receiver_id', $userId);
-                })
-                ->get()
-                ->map(fn($m) => $m->sender_id === $userId ? $m->receiver_id : $m->sender_id)
-                ->unique();
-            $directConversations = User::whereIn('id', $directUserIds)->get();
-        }
+        $directUserIds = Message::whereNull('match_id')
+            ->whereNull('claim_id')
+            ->where(function ($q) use ($userId) {
+                $q->where('sender_id', $userId)->orWhere('receiver_id', $userId);
+            })
+            ->get()
+            ->map(fn($m) => $m->sender_id === $userId ? $m->receiver_id : $m->sender_id)
+            ->unique();
+        $directConversations = User::whereIn('id', $directUserIds)->get();
 
         return view('messages.index', compact('matches', 'directConversations', 'isAdmin'));
     }
@@ -78,6 +64,13 @@ class MessageController extends Controller
                 $q->where('match_id', $match->id)
                   ->orWhereHas('claim', fn($sub) => $sub->where('match_id', $match->id));
             })
+            ->update(['is_read' => true]);
+
+        // Mark related message notifications as read
+        ItemNotification::where('user_id', $userId)
+            ->where('type', 'new_message')
+            ->where('is_read', false)
+            ->where('link', route('messages.show', $match->id))
             ->update(['is_read' => true]);
 
         return view('messages.show', compact('match', 'messages', 'otherUser', 'isOwner'));
@@ -120,31 +113,50 @@ class MessageController extends Controller
         NotificationDispatcher::send(
             $receiver,
             'new_message',
-            'You have a new message from ' . Auth::user()->name . '.'
+            'You have a new message from ' . Auth::user()->name . '.',
+            route('messages.show', $match->id)
         );
+
+        // High-value items: notify admin so they can mediate
+        $isHighValue = $match->lostItem->is_high_value || $match->foundItem->is_high_value;
+        if ($isHighValue && !$isAdmin) {
+            $admins = User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                NotificationDispatcher::send(
+                    $admin,
+                    'new_message',
+                    '[High-Value] New message from ' . Auth::user()->name
+                        . ' about ' . $match->foundItem->item_name . '. This chat requires admin mediation.',
+                    route('messages.show', $match->id)
+                );
+            }
+        }
 
         return back();
     }
 
     /**
-     * Direct messaging (admin to any user, or user replying to admin)
+     * Direct messaging between two users. Allowed when:
+     *   - the current user is an admin (or target is an admin), OR
+     *   - the two users already have a prior direct conversation, OR
+     *   - ?about={found_item_id} points to an active, non-high-value found
+     *     item owned by the target user (peer claim fast-path).
+     * High-value items always route through the admin-mediated claim flow.
      */
-    public function directShow(User $user)
+    public function directShow(Request $request, User $user)
     {
         $userId = Auth::id();
         $isAdmin = Auth::user()->isAdmin();
 
-        // Only admin can initiate direct chats, but users can view/reply
-        if (!$isAdmin && !Message::whereNull('match_id')->whereNull('claim_id')
-            ->where(function ($q) use ($userId, $user) {
-                $q->where(function ($q2) use ($userId, $user) {
-                    $q2->where('sender_id', $userId)->where('receiver_id', $user->id);
-                })->orWhere(function ($q2) use ($userId, $user) {
-                    $q2->where('sender_id', $user->id)->where('receiver_id', $userId);
-                });
-            })->exists()) {
+        if ($userId === $user->id) {
             abort(403);
         }
+
+        $context = $this->authorizeDirectChat($request, $user, $isAdmin);
+        if ($context instanceof \Illuminate\Http\RedirectResponse) {
+            return $context;
+        }
+        $contextItem = $context;
 
         $messages = Message::whereNull('match_id')
             ->whereNull('claim_id')
@@ -166,12 +178,29 @@ class MessageController extends Controller
             ->where('receiver_id', $userId)
             ->update(['is_read' => true]);
 
-        return view('messages.direct', compact('user', 'messages'));
+        // Mark related message notifications as read
+        ItemNotification::where('user_id', $userId)
+            ->where('type', 'new_message')
+            ->where('is_read', false)
+            ->where('link', route('messages.direct', $user->id))
+            ->update(['is_read' => true]);
+
+        return view('messages.direct', compact('user', 'messages', 'contextItem'));
     }
 
     public function directStore(Request $request, User $user)
     {
         $userId = Auth::id();
+        $isAdmin = Auth::user()->isAdmin();
+
+        if ($userId === $user->id) {
+            abort(403);
+        }
+
+        $context = $this->authorizeDirectChat($request, $user, $isAdmin);
+        if ($context instanceof \Illuminate\Http\RedirectResponse) {
+            return $context;
+        }
 
         $request->validate(['content' => 'required|string|max:1000']);
 
@@ -187,9 +216,60 @@ class MessageController extends Controller
         NotificationDispatcher::send(
             $user,
             'new_message',
-            'You have a new message from ' . Auth::user()->name . '.'
+            'You have a new message from ' . Auth::user()->name . '.',
+            route('messages.direct', Auth::id())
         );
 
         return back();
+    }
+
+    /**
+     * Decide whether the current user may open a direct chat with $target.
+     * Returns the context FoundItem (or null) on success, or a RedirectResponse
+     * to bounce the user to a safer destination on denial.
+     */
+    private function authorizeDirectChat(Request $request, User $target, bool $isAdmin)
+    {
+        // Admins can always DM anyone; users may always reply to an admin.
+        if ($isAdmin || $target->isAdmin()) {
+            return null;
+        }
+
+        $userId = Auth::id();
+
+        // If they already have direct message history, the chat is legitimate.
+        $hasHistory = Message::whereNull('match_id')
+            ->whereNull('claim_id')
+            ->where(function ($q) use ($userId, $target) {
+                $q->where(function ($q2) use ($userId, $target) {
+                    $q2->where('sender_id', $userId)->where('receiver_id', $target->id);
+                })->orWhere(function ($q2) use ($userId, $target) {
+                    $q2->where('sender_id', $target->id)->where('receiver_id', $userId);
+                });
+            })
+            ->exists();
+
+        if ($hasHistory) {
+            return null;
+        }
+
+        // Otherwise require an ?about={found_item_id} context pointing at an
+        // active, non-high-value found item owned by the target user.
+        $aboutId = $request->query('about') ?? $request->input('about');
+        if (!$aboutId) {
+            abort(403, 'Direct messages require a shared item context.');
+        }
+
+        $foundItem = FoundItem::find($aboutId);
+        if (!$foundItem || $foundItem->user_id !== $target->id || $foundItem->status !== 'active') {
+            abort(403, 'That item is no longer available for direct chat.');
+        }
+
+        if ($foundItem->is_high_value) {
+            return redirect()->route('claims.claim-found', $foundItem)
+                ->with('error', 'High-value items require admin verification. Please file a claim — an admin will mediate.');
+        }
+
+        return $foundItem;
     }
 }

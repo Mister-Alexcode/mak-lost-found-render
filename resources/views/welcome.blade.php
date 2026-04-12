@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MAK Lost & Found — Makerere University</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -15,14 +16,10 @@
     {{-- Navigation --}}
     <nav class="bg-white/90 backdrop-blur-sm shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                </div>
+            <a href="{{ url('/') }}" class="flex items-center gap-2">
+                <img src="{{ asset('logo.svg') }}" alt="MAK Lost & Found" class="w-9 h-9">
                 <span class="font-bold text-gray-800">MAK Lost & Found</span>
-            </div>
+            </a>
             <div class="flex gap-4 items-center">
                 <a href="{{ route('search.index') }}" class="text-sm text-gray-600 hover:text-gray-900 hidden sm:inline">Browse Items</a>
                 <a href="{{ route('leaderboard.index') }}" class="text-sm text-gray-600 hover:text-gray-900 hidden sm:inline">Leaderboard</a>

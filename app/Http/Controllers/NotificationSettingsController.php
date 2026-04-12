@@ -9,7 +9,9 @@ class NotificationSettingsController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        $prefs = $user->notification_preferences ?? [];
+        // Mirror the same defaults as User::getNotificationChannels() so the view
+        // shows toggles in the state the user would actually receive notifications.
+        $prefs = $user->notification_preferences ?? ['email' => true, 'whatsapp' => true];
         return view('profile.notifications', compact('prefs'));
     }
 

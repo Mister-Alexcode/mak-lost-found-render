@@ -5,6 +5,11 @@
 
     <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
+        <x-section-header
+            icon="dashboard"
+            title="Admin Dashboard"
+            subtitle="Overview of reports, claims, and user activity" />
+
         {{-- Stats --}}
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div class="bg-white rounded-lg shadow p-4 text-center">
@@ -94,19 +99,31 @@
                             <td class="py-2 text-gray-500">{{ $claim->created_at->diffForHumans() }}</td>
                             <td class="py-2">
                                 @if($claim->claim_status === 'pending')
-                                <form method="POST" action="{{ route('admin.claims.approve', $claim) }}" class="inline">
-                                    @csrf
-                                    <button class="text-xs bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700">
-                                        Approve
-                                    </button>
-                                </form>
-                                <form method="POST" action="{{ route('admin.claims.reject', $claim) }}" class="inline ml-1">
-                                    @csrf
-                                    <button class="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">
-                                        Reject
-                                    </button>
-                                </form>
+                                <div class="flex gap-1 mb-1">
+                                    <form method="POST" action="{{ route('admin.claims.approve', $claim) }}" class="inline">
+                                        @csrf
+                                        <button class="text-xs bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700">
+                                            Approve
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ route('admin.claims.reject', $claim) }}" class="inline">
+                                        @csrf
+                                        <button class="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">
+                                            Reject
+                                        </button>
+                                    </form>
+                                </div>
                                 @endif
+                                <div class="flex gap-1">
+                                    <a href="{{ route('messages.direct', $claim->match->lostItem->user) }}"
+                                       class="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded hover:bg-blue-100">
+                                        Msg Owner
+                                    </a>
+                                    <a href="{{ route('messages.direct', $claim->match->foundItem->user) }}"
+                                       class="text-xs bg-green-50 text-green-600 px-2 py-1 rounded hover:bg-green-100">
+                                        Msg Finder
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         @endforeach

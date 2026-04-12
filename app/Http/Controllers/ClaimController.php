@@ -2,10 +2,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Claim;
+use App\Models\FoundItem;
 use App\Models\ItemMatch;
+use App\Models\LostItem;
+use App\Models\Reward;
 use App\Services\NotificationDispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ClaimController extends Controller
 {
@@ -44,6 +48,11 @@ class ClaimController extends Controller
             abort(403);
         }
 
+        if ($match->match_status === 'confirmed' || $match->match_status === 'dismissed') {
+            return redirect()->route('lost-items.show', $match->lost_item_id)
+                ->with('error', 'This item has already been resolved.');
+        }
+
         $claim = Claim::create([
             'match_id'             => $match->id,
             'claimant_id'          => Auth::id(),
@@ -70,5 +79,200 @@ class ClaimController extends Controller
         }
         $claim->load(['match.lostItem', 'match.foundItem.user']);
         return view('claims.show', compact('claim'));
+    }
+
+    /**
+     * Owner confirms return for non-high-value items (peer-to-peer).
+     */
+    public function confirmReturn(ItemMatch $match)
+    {
+        $userId = Auth::id();
+        $isOwner  = $match->lostItem->user_id === $userId;
+        $isFinder = $match->foundItem->user_id === $userId;
+
+        if (!$isOwner && !$isFinder) abort(403);
+
+        // High-value items must go through admin
+        if ($match->lostItem->is_high_value || $match->foundItem->is_high_value) {
+            return back()->with('error', 'High-value items require admin verification. Please file a claim instead.');
+        }
+
+        // Already confirmed
+        if ($match->match_status === 'confirmed') {
+            return back()->with('error', 'This item has already been marked as returned.');
+        }
+
+        // Mark items as returned
+        $match->lostItem->update(['status' => 'returned']);
+        $match->foundItem->update(['status' => 'returned']);
+        $match->update(['match_status' => 'confirmed']);
+
+        // Auto-create an approved claim record
+        $claim = Claim::create([
+            'match_id'             => $match->id,
+            'claimant_id'          => $match->lostItem->user_id,
+            'verification_details' => 'Peer-to-peer return confirmed by ' . Auth::user()->name,
+            'claim_status'         => 'approved',
+            'resolved_at'          => now(),
+        ]);
+
+        // Award points
+        $owner = $match->lostItem->user;
+        $owner->increment('reward_points', 20);
+        Reward::create([
+            'user_id'        => $owner->id,
+            'claim_id'       => $claim->id,
+            'action_type'    => 'successful_return',
+            'points_awarded' => 20,
+        ]);
+
+        // Notify both parties
+        $other = $isOwner ? $match->foundItem->user : $match->lostItem->user;
+        NotificationDispatcher::send(
+            $other,
+            'item_returned',
+            Auth::user()->name . ' confirmed the return of ' . $match->lostItem->item_name . '. Thank you!',
+            route('messages.show', $match->id)
+        );
+
+        $selfMessage = $isOwner
+            ? 'You confirmed the return of ' . $match->lostItem->item_name . '. You earned 20 reward points!'
+            : 'You confirmed the return of ' . $match->lostItem->item_name . '. Thank you for being honest!';
+
+        NotificationDispatcher::send(
+            Auth::user(),
+            'item_returned',
+            $selfMessage,
+            route('lost-items.show', $match->lostItem->id)
+        );
+
+        return back()->with('success', 'Item marked as returned! 20 reward points awarded.');
+    }
+
+    /**
+     * Show the claim form for a found item (user claims "this is mine").
+     */
+    public function claimFoundItem(FoundItem $foundItem)
+    {
+        if ($foundItem->user_id === Auth::id()) {
+            return redirect()->route('found-items.show', $foundItem)
+                ->with('error', 'You cannot claim your own found item.');
+        }
+
+        if ($foundItem->status !== 'active') {
+            return redirect()->route('found-items.show', $foundItem)
+                ->with('error', 'This item has already been returned.');
+        }
+
+        // Check for existing pending claim by this user for this found item
+        $existingClaim = Claim::whereHas('match', fn($q) => $q->where('found_item_id', $foundItem->id))
+            ->where('claimant_id', Auth::id())
+            ->whereIn('claim_status', ['pending', 'under_review'])
+            ->first();
+
+        // Get user's lost items that could be the match
+        $myLostItems = Auth::user()->lostItems()
+            ->where('status', 'active')
+            ->latest()
+            ->get();
+
+        return view('claims.claim-found', compact('foundItem', 'existingClaim', 'myLostItems'));
+    }
+
+    /**
+     * Process the claim for a found item.
+     */
+    public function storeClaimFoundItem(Request $request, FoundItem $foundItem)
+    {
+        if ($foundItem->user_id === Auth::id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'verification_details' => 'required|string|min:20',
+            'lost_item_id'         => 'nullable|exists:lost_items,id',
+        ]);
+
+        $user = Auth::user();
+
+        // Use selected lost item or auto-create one
+        if ($request->lost_item_id) {
+            $lostItem = LostItem::where('id', $request->lost_item_id)
+                ->where('user_id', $user->id)
+                ->firstOrFail();
+        } else {
+            // Auto-create a lost item report from found item details
+            $lostItem = LostItem::create([
+                'user_id'       => $user->id,
+                'item_name'     => $foundItem->item_name,
+                'category'      => $foundItem->category,
+                'description'   => 'Claimed from found item report: ' . $foundItem->tracking_id,
+                'color'         => $foundItem->color,
+                'brand'         => $foundItem->brand,
+                'location_lost' => $foundItem->location_found,
+                'date_lost'     => $foundItem->date_found,
+                'status'        => 'active',
+                'is_high_value' => $foundItem->is_high_value,
+                'tracking_id'   => 'LOST-' . strtoupper(Str::random(8)),
+            ]);
+        }
+
+        // Find or create a match
+        $match = ItemMatch::where('lost_item_id', $lostItem->id)
+            ->where('found_item_id', $foundItem->id)
+            ->first();
+
+        if (!$match) {
+            $match = ItemMatch::create([
+                'lost_item_id'     => $lostItem->id,
+                'found_item_id'    => $foundItem->id,
+                'confidence_score' => 90,
+                'match_status'     => 'pending',
+            ]);
+        }
+
+        // Check for duplicate claim
+        $existing = Claim::where('match_id', $match->id)
+            ->where('claimant_id', $user->id)
+            ->whereIn('claim_status', ['pending', 'under_review'])
+            ->first();
+
+        if ($existing) {
+            return redirect()->route('claims.show', $existing)
+                ->with('error', 'You already have a pending claim for this item.');
+        }
+
+        $claim = Claim::create([
+            'match_id'             => $match->id,
+            'claimant_id'          => $user->id,
+            'verification_details' => $request->verification_details,
+            'claim_status'         => 'pending',
+        ]);
+
+        // Notify the finder
+        NotificationDispatcher::send(
+            $foundItem->user,
+            'claim_submitted',
+            $user->name . ' claims that your found item "' . $foundItem->item_name
+                . '" belongs to them and has submitted a claim.',
+            route('found-items.show', $foundItem->id)
+        );
+
+        // Notify admins for high-value items
+        if ($foundItem->is_high_value || $lostItem->is_high_value) {
+            $admins = \App\Models\User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                NotificationDispatcher::send(
+                    $admin,
+                    'claim_submitted',
+                    '[High-Value] ' . $user->name . ' has submitted a claim for found item "'
+                        . $foundItem->item_name . '". Admin verification required.',
+                    route('admin.claims')
+                );
+            }
+        }
+
+        return redirect()->route('claims.show', $claim)
+            ->with('success', 'Claim submitted successfully! The finder and admin have been notified.');
     }
 }

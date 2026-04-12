@@ -10,7 +10,7 @@ class FoundItem extends Model {
     protected $fillable = [
         'user_id', 'item_name', 'category', 'description',
         'color', 'brand', 'location_found', 'latitude', 'longitude',
-        'date_found', 'photo', 'status', 'tracking_id'
+        'date_found', 'photo', 'status', 'is_high_value', 'tracking_id'
     ];
 
     public function user() { return $this->belongsTo(User::class); }

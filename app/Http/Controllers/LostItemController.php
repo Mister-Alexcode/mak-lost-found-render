@@ -8,6 +8,7 @@ use App\Services\NotificationDispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class LostItemController extends Controller
 {
@@ -21,12 +22,12 @@ class LostItemController extends Controller
 
     public function index()
     {
-        $query = Auth::user()->isAdmin()
-            ? LostItem::with('user')->latest()
-            : LostItem::where('user_id', Auth::id())->latest();
-
-        $lostItems = $query->paginate(10);
         $isAdmin = Auth::user()->isAdmin();
+        $query = LostItem::with('user');
+        if (!$isAdmin) {
+            $query->where('status', 'active');
+        }
+        $lostItems = $query->latest()->paginate(10);
         return view('lost-items.index', compact('lostItems', 'isAdmin'));
     }
 
@@ -56,6 +57,9 @@ class LostItemController extends Controller
             $photoPath = $request->file('photo')->store('lost-items', 'public');
         }
 
+        $isHighValue = $request->boolean('is_high_value')
+            || in_array($request->category, ['Electronics']);
+
         $lostItem = LostItem::create([
             'user_id'       => Auth::id(),
             'item_name'     => $request->item_name,
@@ -69,6 +73,7 @@ class LostItemController extends Controller
             'date_lost'     => $request->date_lost,
             'photo'         => $photoPath,
             'status'        => 'active',
+            'is_high_value' => $isHighValue,
             'tracking_id'   => 'LOST-' . strtoupper(Str::random(8)),
             'reward_offer'  => $request->reward_offer,
         ]);
@@ -76,12 +81,36 @@ class LostItemController extends Controller
         $matches = $this->matchingService->findMatchesForLostItem($lostItem);
         if ($matches->count() > 0) {
             $best = $matches->first();
+            // Notify the reporter of the lost item about their best match.
             NotificationDispatcher::send(
                 Auth::user(),
                 'match_found',
                 'A potential match has been found for your lost ' . $lostItem->item_name
-                    . '! Confidence score: ' . $best->confidence_score . '%. Click here to view.'
+                    . '! Confidence score: ' . $best->confidence_score . '%. Click here to view and claim.',
+                route('lost-items.show', $lostItem->id)
             );
+
+            // Notify each found-item owner once (best match per user) so they know
+            // someone is looking for an item that resembles what they reported.
+            $bestPerUser = [];
+            foreach ($matches as $match) {
+                $uid = $match->foundItem->user_id;
+                if (!isset($bestPerUser[$uid]) || $match->confidence_score > $bestPerUser[$uid]->confidence_score) {
+                    $bestPerUser[$uid] = $match;
+                }
+            }
+            foreach ($bestPerUser as $match) {
+                // Don't double-notify the reporter if they also own a found item.
+                if ($match->foundItem->user_id === Auth::id()) continue;
+                NotificationDispatcher::send(
+                    $match->foundItem->user,
+                    'match_found',
+                    'Someone is looking for a lost ' . $lostItem->item_name
+                        . ' that may match the item you found! Confidence score: '
+                        . $match->confidence_score . '%. Click here to view.',
+                    route('found-items.show', $match->foundItem->id)
+                );
+            }
         }
 
         return redirect()->route('lost-items.index')
@@ -123,6 +152,9 @@ class LostItemController extends Controller
 
         $photoPath = $lostItem->photo;
         if ($request->hasFile('photo')) {
+            if ($lostItem->photo) {
+                Storage::disk('public')->delete($lostItem->photo);
+            }
             $photoPath = $request->file('photo')->store('lost-items', 'public');
         }
 
@@ -137,6 +169,7 @@ class LostItemController extends Controller
             'longitude'    => $request->longitude,
             'date_lost'    => $request->date_lost,
             'photo'        => $photoPath,
+            'is_high_value'=> $request->boolean('is_high_value') || in_array($request->category, ['Electronics']),
             'reward_offer' => $request->reward_offer,
         ]);
 

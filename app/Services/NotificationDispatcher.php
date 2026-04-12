@@ -5,6 +5,8 @@ use App\Models\ItemNotification;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ItemNotificationMail;
+use App\Services\SmsService;
+use App\Services\WhatsAppService;
 
 class NotificationDispatcher
 {
@@ -12,13 +14,14 @@ class NotificationDispatcher
      * Send a notification to a user via all their preferred channels.
      * In-app is always created regardless of preferences.
      */
-    public static function send(User $user, string $type, string $message): ItemNotification
+    public static function send(User $user, string $type, string $message, ?string $link = null): ItemNotification
     {
         // Always create in-app notification
         $notification = ItemNotification::create([
             'user_id' => $user->id,
             'type'    => $type,
             'message' => $message,
+            'link'    => $link,
             'channel' => 'in-app',
             'is_read' => false,
         ]);

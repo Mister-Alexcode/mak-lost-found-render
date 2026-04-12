@@ -40,6 +40,11 @@
 
     <div class="py-8 max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
+        <x-section-header
+            icon="messages"
+            title="Messages"
+            subtitle="Direct conversations and match-based chats" />
+
         {{-- Direct Conversations --}}
         @if($directConversations->isNotEmpty())
         <div>
@@ -55,7 +60,9 @@
                             </div>
                             <div>
                                 <p class="font-medium">{{ $otherUser->name }}</p>
+                                @if(!$otherUser->isAdmin())
                                 <p class="text-xs text-gray-500">{{ $otherUser->email }}</p>
+                                @endif
                             </div>
                         </div>
                         @if($otherUser->isAdmin())

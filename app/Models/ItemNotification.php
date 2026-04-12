@@ -8,7 +8,7 @@ class ItemNotification extends Model {
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'type', 'message', 'channel', 'is_read'
+        'user_id', 'type', 'message', 'link', 'channel', 'is_read'
     ];
 
     public function user() { return $this->belongsTo(User::class); }
