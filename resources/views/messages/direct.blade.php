@@ -12,7 +12,7 @@
 
         @isset($contextItem)
         @if($contextItem)
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-sm text-blue-800">
+        <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 text-sm text-green-800">
             <p class="font-medium">Re: {{ $contextItem->item_name }} ({{ $contextItem->tracking_id }})</p>
             <p class="text-xs mt-1">Peer chat for a non-high-value item. Coordinate the return directly. For valuable items, file a claim so an admin can mediate.</p>
         </div>
@@ -39,10 +39,10 @@
             <div class="flex {{ $msg->sender_id === auth()->id() ? 'justify-end' : 'justify-start' }}">
                 <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg text-sm
                     {{ $msg->sender_id === auth()->id()
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-green-600 text-white'
                         : 'bg-gray-100 text-gray-800' }}">
                     <p>{{ $msg->content }}</p>
-                    <p class="text-xs mt-1 {{ $msg->sender_id === auth()->id() ? 'text-blue-200' : 'text-gray-400' }}">
+                    <p class="text-xs mt-1 {{ $msg->sender_id === auth()->id() ? 'text-green-200' : 'text-gray-400' }}">
                         {{ $msg->created_at->format('H:i') }}
                     </p>
                 </div>
@@ -65,10 +65,10 @@
             @endif
             <div class="flex gap-2">
                 <input type="text" name="content"
-                       class="flex-1 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 text-sm"
+                       class="flex-1 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 text-sm"
                        placeholder="Type a message..." autocomplete="off" required maxlength="1000">
                 <button type="submit"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm">
                     Send
                 </button>
             </div>

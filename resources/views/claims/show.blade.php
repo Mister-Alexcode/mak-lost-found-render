@@ -11,7 +11,7 @@
                 <span class="px-3 py-1 rounded-full text-sm font-medium
                     @if($claim->claim_status === 'approved') bg-green-100 text-green-700
                     @elseif($claim->claim_status === 'rejected') bg-red-100 text-red-700
-                    @elseif($claim->claim_status === 'under_review') bg-blue-100 text-blue-700
+                    @elseif($claim->claim_status === 'under_review') bg-green-100 text-green-700
                     @else bg-yellow-100 text-yellow-700 @endif">
                     {{ ucfirst(str_replace('_', ' ', $claim->claim_status)) }}
                 </span>
@@ -22,7 +22,7 @@
                     <p class="text-xs text-gray-500 uppercase font-medium">Lost Item</p>
                     <p class="font-bold">{{ $claim->match->lostItem->item_name }}</p>
                     <p class="text-sm text-gray-600">{{ $claim->match->lostItem->location_lost }}</p>
-                    <p class="text-xs font-mono text-blue-600">{{ $claim->match->lostItem->tracking_id }}</p>
+                    <p class="text-xs font-mono text-green-600">{{ $claim->match->lostItem->tracking_id }}</p>
                 </div>
                 <div>
                     <p class="text-xs text-gray-500 uppercase font-medium">Found Item</p>
@@ -61,7 +61,7 @@
             </a>
             @if($claim->claim_status === 'approved')
             <a href="{{ route('messages.show', $claim->match_id) }}"
-               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+               class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm">
                 Message Finder
             </a>
             @endif

@@ -19,7 +19,7 @@
             <div class="mt-2 flex gap-3" x-data="{ channel: '{{ old('channel', 'email') }}' }">
                 <label class="flex-1 cursor-pointer">
                     <input type="radio" name="channel" value="email" x-model="channel" class="hidden peer">
-                    <div class="peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:text-blue-700 border-2 rounded-lg p-3 text-center transition hover:bg-gray-50">
+                    <div class="peer-checked:bg-green-50 peer-checked:border-green-500 peer-checked:text-green-700 border-2 rounded-lg p-3 text-center transition hover:bg-gray-50">
                         <p class="font-medium text-sm">Email</p>
                         <p class="text-xs text-gray-500">Code to your email</p>
                     </div>

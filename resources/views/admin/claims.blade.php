@@ -79,7 +79,7 @@
                             @endif
                             <div class="flex gap-1">
                                 <a href="{{ route('messages.direct', $claim->match->lostItem->user) }}"
-                                   class="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded hover:bg-blue-100" title="Message {{ $claim->match->lostItem->user->name }}">
+                                   class="text-xs bg-green-50 text-green-600 px-2 py-1 rounded hover:bg-green-100" title="Message {{ $claim->match->lostItem->user->name }}">
                                     Msg Owner
                                 </a>
                                 <a href="{{ route('messages.direct', $claim->match->foundItem->user) }}"

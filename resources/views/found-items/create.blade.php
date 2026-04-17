@@ -11,7 +11,7 @@
             </div>
 
             @if(!empty($prefill))
-            <div class="bg-blue-50 border border-blue-200 rounded p-3 mb-5 text-sm text-blue-800">
+            <div class="bg-green-50 border border-green-200 rounded p-3 mb-5 text-sm text-green-800">
                 Some fields have been pre-filled from the lost item report. Please update the location and date to where and when <strong>you</strong> found it.
             </div>
             @endif

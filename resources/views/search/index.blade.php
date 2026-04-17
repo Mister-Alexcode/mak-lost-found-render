@@ -11,11 +11,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <div class="md:col-span-2">
                         <input type="text" name="q" value="{{ $query }}"
-                               class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                               class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-500"
                                placeholder="Search by item name, description, brand...">
                     </div>
                     <div>
-                        <select name="category" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                        <select name="category" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-500">
                             <option value="">All Categories</option>
                             @foreach($categories as $cat)
                             <option value="{{ $cat }}" {{ $category == $cat ? 'selected' : '' }}>{{ $cat }}</option>
@@ -24,14 +24,14 @@
                     </div>
                     <div>
                         <input type="text" name="location" value="{{ $location }}"
-                               class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                               class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-500"
                                placeholder="Location...">
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="flex gap-1">
                         <label class="cursor-pointer px-3 py-1.5 rounded-lg text-sm font-medium transition
-                            {{ $type === 'lost' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                            {{ $type === 'lost' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                             <input type="radio" name="type" value="lost" class="hidden" onchange="this.form.submit()"
                                 {{ $type === 'lost' ? 'checked' : '' }}> Lost Items
                         </label>
@@ -46,7 +46,7 @@
                                 {{ $type === 'both' ? 'checked' : '' }}> Both
                         </label>
                     </div>
-                    <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 text-sm">
+                    <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700 text-sm">
                         Search
                     </button>
                     <a href="{{ route('search.index') }}" class="text-sm text-gray-500 hover:underline">Clear</a>
@@ -57,12 +57,12 @@
         {{-- View Toggle --}}
         <div class="flex gap-2 mb-4" x-data="{ view: 'list' }">
             <button @click="view = 'list'"
-                    :class="view === 'list' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700'"
+                    :class="view === 'list' ? 'bg-green-600 text-white' : 'bg-white text-gray-700'"
                     class="px-4 py-2 rounded shadow text-sm font-medium transition">
                 List View
             </button>
             <button @click="view = 'map'; $nextTick(() => { if(window._searchMap) window._searchMap.invalidateSize(); else window.initSearchMap(); })"
-                    :class="view === 'map' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700'"
+                    :class="view === 'map' ? 'bg-green-600 text-white' : 'bg-white text-gray-700'"
                     class="px-4 py-2 rounded shadow text-sm font-medium transition">
                 Map View
             </button>
@@ -141,7 +141,7 @@
                     '<strong>' + item.name + '</strong><br>' +
                     '<span class="text-gray-500">' + item.location + '</span><br>' +
                     '<code class="text-xs">' + item.tracking_id + '</code><br>' +
-                    '<a href="' + item.url + '" class="text-blue-600 underline text-xs">View Details</a>' +
+                    '<a href="' + item.url + '" class="text-green-600 underline text-xs">View Details</a>' +
                     '</div>'
                 );
                 bounds.push([item.lat, item.lng]);
@@ -182,7 +182,7 @@
         {{-- Lost Items --}}
         @if($type !== 'found' && $lostItems->count() > 0)
         <div class="mb-8">
-            <h3 class="text-lg font-bold mb-3 text-blue-700">Lost Items ({{ $lostItems->total() }})</h3>
+            <h3 class="text-lg font-bold mb-3 text-green-700">Lost Items ({{ $lostItems->total() }})</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 @foreach($lostItems as $item)
                 <div class="bg-white rounded-lg shadow p-4">
@@ -198,10 +198,10 @@
                     <p class="text-xs text-gray-500">{{ $item->category }} · {{ $item->color }}</p>
                     <p class="text-xs text-gray-500">Lost: {{ $item->location_lost }}</p>
                     <p class="text-xs text-gray-500">Date: {{ $item->date_lost }}</p>
-                    <p class="text-xs font-mono text-blue-600 mt-1">{{ $item->tracking_id }}</p>
+                    <p class="text-xs font-mono text-green-600 mt-1">{{ $item->tracking_id }}</p>
                     @auth
                     <a href="{{ route('lost-items.show', $item) }}"
-                       class="mt-2 inline-block text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded hover:bg-blue-100">
+                       class="mt-2 inline-block text-xs bg-green-50 text-green-600 px-3 py-1 rounded hover:bg-green-100">
                         View Details
                     </a>
                     @endauth

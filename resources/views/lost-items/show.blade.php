@@ -22,7 +22,7 @@
                 <div class="space-y-2">
                     <h3 class="text-2xl font-bold">{{ $lostItem->item_name }}</h3>
                     <p><span class="font-medium">Tracking ID:</span>
-                        <span class="font-mono text-blue-600">{{ $lostItem->tracking_id }}</span></p>
+                        <span class="font-mono text-green-600">{{ $lostItem->tracking_id }}</span></p>
                     <p><span class="font-medium">Category:</span> {{ $lostItem->category }}</p>
                     <p><span class="font-medium">Color:</span> {{ $lostItem->color }}</p>
                     <p><span class="font-medium">Brand:</span> {{ $lostItem->brand ?? 'N/A' }}</p>
@@ -173,7 +173,7 @@
 
                     <div class="mt-4 flex flex-wrap gap-2">
                         <a href="{{ route('messages.show', $match->id) }}"
-                           class="inline-flex items-center gap-1.5 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
+                           class="inline-flex items-center gap-1.5 bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                             </svg>

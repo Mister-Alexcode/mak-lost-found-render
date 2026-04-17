@@ -22,10 +22,10 @@ $path = $icons[$icon] ?? $icons['home'];
 @endphp
 
 <div class="relative overflow-hidden rounded-xl shadow-lg mb-6">
-    <div class="absolute inset-0 bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-green-500 via-green-600 to-green-600"></div>
     <div class="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10"></div>
     <div class="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
-    <div class="absolute -left-6 -bottom-12 w-40 h-40 bg-indigo-400/20 rounded-full blur-3xl"></div>
+    <div class="absolute -left-6 -bottom-12 w-40 h-40 bg-green-400/20 rounded-full blur-3xl"></div>
 
     <div class="relative flex items-center gap-4 px-6 py-5">
         <div class="flex-shrink-0 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center ring-1 ring-white/30 shadow-inner">
@@ -36,7 +36,7 @@ $path = $icons[$icon] ?? $icons['home'];
         <div class="flex-1 min-w-0">
             <h1 class="text-xl sm:text-2xl font-bold text-white truncate">{{ $title }}</h1>
             @if($subtitle)
-                <p class="text-sm text-blue-100 mt-0.5 truncate">{{ $subtitle }}</p>
+                <p class="text-sm text-green-100 mt-0.5 truncate">{{ $subtitle }}</p>
             @endif
         </div>
         @if(isset($actions))

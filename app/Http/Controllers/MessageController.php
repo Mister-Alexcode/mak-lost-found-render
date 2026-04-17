@@ -17,14 +17,15 @@ class MessageController extends Controller
         $userId = Auth::id();
         $isAdmin = Auth::user()->isAdmin();
 
-        // Get match-based conversations
-        $matches = ItemMatch::where('match_status', '!=', 'dismissed')
-            ->where(function ($q) use ($userId) {
+        // Admins observe every active match conversation; regular users see only their own.
+        $matchQuery = ItemMatch::where('match_status', '!=', 'dismissed');
+        if (!$isAdmin) {
+            $matchQuery->where(function ($q) use ($userId) {
                 $q->whereHas('lostItem', fn($sub) => $sub->where('user_id', $userId))
                   ->orWhereHas('foundItem', fn($sub) => $sub->where('user_id', $userId));
-            })
-            ->with(['lostItem.user', 'foundItem.user'])
-            ->get();
+            });
+        }
+        $matches = $matchQuery->with(['lostItem.user', 'foundItem.user'])->get();
 
         $directUserIds = Message::whereNull('match_id')
             ->whereNull('claim_id')
@@ -48,6 +49,8 @@ class MessageController extends Controller
 
         if (!$isOwner && !$isFinder && !$isAdmin) abort(403);
 
+        $isHighValue = $match->lostItem->is_high_value || $match->foundItem->is_high_value;
+
         $messages = Message::where(function ($q) use ($match) {
                 $q->where('match_id', $match->id)
                   ->orWhereHas('claim', fn($sub) => $sub->where('match_id', $match->id));
@@ -56,7 +59,9 @@ class MessageController extends Controller
             ->oldest()
             ->get();
 
-        $otherUser = $isOwner ? $match->foundItem->user : $match->lostItem->user;
+        $otherUser = $isAdmin
+            ? $match->foundItem->user
+            : ($isOwner ? $match->foundItem->user : $match->lostItem->user);
 
         // Mark received messages as read
         Message::where('receiver_id', $userId)
@@ -73,7 +78,7 @@ class MessageController extends Controller
             ->where('link', route('messages.show', $match->id))
             ->update(['is_read' => true]);
 
-        return view('messages.show', compact('match', 'messages', 'otherUser', 'isOwner'));
+        return view('messages.show', compact('match', 'messages', 'otherUser', 'isOwner', 'isAdmin', 'isHighValue'));
     }
 
     public function store(Request $request, ItemMatch $match)
@@ -85,18 +90,19 @@ class MessageController extends Controller
 
         if (!$isOwner && !$isFinder && !$isAdmin) abort(403);
 
+        // Admin observes chats only — they don't post in the match thread.
+        // High-value items disallow any finder↔claimant chat entirely.
+        if ($isAdmin) {
+            return back()->with('error', 'Admins observe match chats but do not post in them. Use a direct message instead.');
+        }
+        $isHighValue = $match->lostItem->is_high_value || $match->foundItem->is_high_value;
+        if ($isHighValue) {
+            return back()->with('error', 'High-value items must be handled at the admin office — no direct chat between finder and claimant.');
+        }
+
         $request->validate(['content' => 'required|string|max:1000']);
 
-        // Determine receiver
-        if ($isAdmin) {
-            // Admin can message either party — default to lost item owner
-            $receiverId = $match->lostItem->user_id;
-            if ($request->has('receiver_id')) {
-                $receiverId = $request->receiver_id;
-            }
-        } else {
-            $receiverId = $isOwner ? $match->foundItem->user_id : $match->lostItem->user_id;
-        }
+        $receiverId = $isOwner ? $match->foundItem->user_id : $match->lostItem->user_id;
 
         $claim = $match->claims()->first();
 
@@ -116,21 +122,6 @@ class MessageController extends Controller
             'You have a new message from ' . Auth::user()->name . '.',
             route('messages.show', $match->id)
         );
-
-        // High-value items: notify admin so they can mediate
-        $isHighValue = $match->lostItem->is_high_value || $match->foundItem->is_high_value;
-        if ($isHighValue && !$isAdmin) {
-            $admins = User::where('role', 'admin')->get();
-            foreach ($admins as $admin) {
-                NotificationDispatcher::send(
-                    $admin,
-                    'new_message',
-                    '[High-Value] New message from ' . Auth::user()->name
-                        . ' about ' . $match->foundItem->item_name . '. This chat requires admin mediation.',
-                    route('messages.show', $match->id)
-                );
-            }
-        }
 
         return back();
     }

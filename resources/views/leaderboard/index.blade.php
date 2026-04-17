@@ -6,16 +6,16 @@
     <div class="py-8 max-w-3xl mx-auto sm:px-6 lg:px-8">
 
         @auth
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex justify-between items-center">
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex justify-between items-center">
             <div>
-                <p class="text-sm text-blue-600 font-medium">Your Rank</p>
-                <p class="text-2xl font-bold text-blue-800">#{{ $myRank }}</p>
+                <p class="text-sm text-green-600 font-medium">Your Rank</p>
+                <p class="text-2xl font-bold text-green-800">#{{ $myRank }}</p>
             </div>
             <div class="text-right">
-                <p class="text-sm text-blue-600 font-medium">Your Points</p>
-                <p class="text-2xl font-bold text-blue-800">{{ auth()->user()->reward_points }}</p>
+                <p class="text-sm text-green-600 font-medium">Your Points</p>
+                <p class="text-2xl font-bold text-green-800">{{ auth()->user()->reward_points }}</p>
             </div>
-            <div class="text-right text-xs text-blue-500 max-w-40">
+            <div class="text-right text-xs text-green-500 max-w-40">
                 <p>+10 pts: Report found item</p>
                 <p>+20 pts: Successful return</p>
                 <p>+5 pts: Referral</p>
@@ -34,7 +34,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @foreach($topUsers as $index => $user)
-                    <tr class="{{ auth()->check() && auth()->id() === $user->id ? 'bg-blue-50' : '' }}">
+                    <tr class="{{ auth()->check() && auth()->id() === $user->id ? 'bg-green-50' : '' }}">
                         <td class="px-4 py-3">
                             @if($index === 0)
                                 <span class="text-yellow-500 font-bold text-lg">🥇</span>
@@ -49,7 +49,7 @@
                         <td class="px-4 py-3">
                             <span class="font-medium">{{ $user->name }}</span>
                             @if(auth()->check() && auth()->id() === $user->id)
-                                <span class="text-xs text-blue-600 ml-1">(you)</span>
+                                <span class="text-xs text-green-600 ml-1">(you)</span>
                             @endif
                         </td>
                         <td class="px-4 py-3 text-right font-bold text-gray-800">

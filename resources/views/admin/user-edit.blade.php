@@ -23,14 +23,14 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                     <input type="text" name="name" value="{{ old('name', $user->name) }}" required
-                           class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                           class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
                     @error('name')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <input type="email" name="email" value="{{ old('email', $user->email) }}" required
-                           class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                           class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
                     @error('email')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
 
@@ -38,25 +38,25 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
                         <input type="text" name="phone_number" value="{{ old('phone_number', $user->phone_number) }}"
-                               class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                               class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
                         <input type="text" name="student_id" value="{{ old('student_id', $user->student_id) }}"
-                               class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                               class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Reward Points</label>
                     <input type="number" name="reward_points" min="0" value="{{ old('reward_points', $user->reward_points) }}" required
-                           class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                           class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
                     @error('reward_points')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div class="flex items-center justify-between pt-4 border-t">
                     <a href="{{ route('admin.users') }}" class="text-sm text-gray-600 hover:text-gray-900">← Cancel</a>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm">
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm">
                         Save Changes
                     </button>
                 </div>

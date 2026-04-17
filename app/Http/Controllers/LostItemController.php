@@ -81,12 +81,16 @@ class LostItemController extends Controller
         $matches = $this->matchingService->findMatchesForLostItem($lostItem);
         if ($matches->count() > 0) {
             $best = $matches->first();
+            $bestHighValue = $lostItem->is_high_value || $best->foundItem->is_high_value;
             // Notify the reporter of the lost item about their best match.
             NotificationDispatcher::send(
                 Auth::user(),
                 'match_found',
-                'A potential match has been found for your lost ' . $lostItem->item_name
-                    . '! Confidence score: ' . $best->confidence_score . '%. Click here to view and claim.',
+                $bestHighValue
+                    ? 'A potential match has been found for your lost ' . $lostItem->item_name
+                        . ' (' . $best->confidence_score . '% match). Please visit the admin office with proof of ownership — an administrator will verify and hand over the item.'
+                    : 'A potential match has been found for your lost ' . $lostItem->item_name
+                        . '! Confidence score: ' . $best->confidence_score . '%. Click here to view and claim.',
                 route('lost-items.show', $lostItem->id)
             );
 
@@ -102,12 +106,16 @@ class LostItemController extends Controller
             foreach ($bestPerUser as $match) {
                 // Don't double-notify the reporter if they also own a found item.
                 if ($match->foundItem->user_id === Auth::id()) continue;
+                $isHighValue = $match->lostItem->is_high_value || $match->foundItem->is_high_value;
                 NotificationDispatcher::send(
                     $match->foundItem->user,
                     'match_found',
-                    'Someone is looking for a lost ' . $lostItem->item_name
-                        . ' that may match the item you found! Confidence score: '
-                        . $match->confidence_score . '%. Click here to view.',
+                    $isHighValue
+                        ? 'Someone is looking for a lost ' . $lostItem->item_name
+                            . ' that may match the item you found (' . $match->confidence_score . '% match). Please deliver the item to the admin office — an administrator will verify ownership and handle the handover.'
+                        : 'Someone is looking for a lost ' . $lostItem->item_name
+                            . ' that may match the item you found! Confidence score: '
+                            . $match->confidence_score . '%. Click here to view.',
                     route('found-items.show', $match->foundItem->id)
                 );
             }

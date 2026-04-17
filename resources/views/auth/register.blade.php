@@ -58,7 +58,7 @@
             <div class="mt-2 flex gap-4">
                 <label class="flex items-center gap-2 cursor-pointer px-4 py-2 border rounded-lg hover:bg-gray-50 transition">
                     <input type="radio" name="verify_via" value="email" {{ old('verify_via', 'email') === 'email' ? 'checked' : '' }}
-                           class="text-blue-600 focus:ring-blue-500">
+                           class="text-green-600 focus:ring-green-500">
                     <div>
                         <p class="text-sm font-medium">Email</p>
                         <p class="text-xs text-gray-500">Code sent to your email</p>
@@ -82,7 +82,7 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
+            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" href="{{ route('login') }}">
                 {{ __('Already registered?') }}
             </a>
 

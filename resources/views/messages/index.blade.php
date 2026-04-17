@@ -4,14 +4,14 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Messages</h2>
             @if($isAdmin)
             <div x-data="{ open: false, search: '', users: [] }" class="relative">
-                <button @click="open = !open" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
+                <button @click="open = !open" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition">
                     + New Message
                 </button>
                 <div x-show="open" @click.away="open = false" x-cloak
                      class="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border p-3 z-50">
                     <form method="GET" action="" x-ref="userSearch">
                         <input type="text" placeholder="Search user by name or email..."
-                               class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                               class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-green-500"
                                x-model="search"
                                @input.debounce.300ms="
                                    if(search.length >= 2) {
@@ -90,7 +90,7 @@
                    class="block bg-white rounded-lg shadow p-4 hover:bg-gray-50 transition">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-bold">
+                            <div class="w-9 h-9 rounded-full bg-green-100 text-green-700 flex items-center justify-center text-sm font-bold">
                                 {{ strtoupper(substr($otherUser->name, 0, 1)) }}
                             </div>
                             <div>

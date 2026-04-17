@@ -54,13 +54,13 @@
                         serial number, unique markings, what was stored inside, purchase date, etc. (minimum 20 characters)
                     </p>
                     <textarea name="verification_details" rows="5"
-                              class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                               placeholder="e.g. My laptop has a MAK sticker on the back, a scratch on the bottom left corner, and the serial number is ABC123. I last used it in the library on Monday...">{{ old('verification_details') }}</textarea>
                 </div>
 
                 <div class="mt-6 flex gap-3">
                     <button type="submit"
-                            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                            class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
                         Submit Claim
                     </button>
                     <a href="{{ route('lost-items.show', $match->lostItem) }}"

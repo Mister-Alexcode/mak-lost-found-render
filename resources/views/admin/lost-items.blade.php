@@ -21,7 +21,7 @@
                 <tbody class="divide-y divide-gray-100">
                     @forelse($items as $item)
                     <tr>
-                        <td class="px-4 py-3 font-mono text-xs text-blue-600">{{ $item->tracking_id }}</td>
+                        <td class="px-4 py-3 font-mono text-xs text-green-600">{{ $item->tracking_id }}</td>
                         <td class="px-4 py-3 font-medium">{{ $item->item_name }}</td>
                         <td class="px-4 py-3">{{ $item->user->name }}</td>
                         <td class="px-4 py-3">{{ $item->category }}</td>

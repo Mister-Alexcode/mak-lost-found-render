@@ -59,7 +59,7 @@
                         </span>
                         @else
                         <a href="{{ route('messages.direct', ['user' => $item->user_id, 'about' => $item->id]) }}"
-                           class="text-sm bg-blue-50 text-blue-600 px-3 py-1 rounded hover:bg-blue-100">
+                           class="text-sm bg-green-50 text-green-600 px-3 py-1 rounded hover:bg-green-100">
                             Chat
                         </a>
                         @endif

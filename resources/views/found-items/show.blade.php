@@ -67,13 +67,13 @@
                 ->isNotEmpty();
         @endphp
         @if(Auth::id() !== $foundItem->user_id && $foundItem->status === 'active' && !$hasPendingClaim)
-        <div class="bg-blue-50 border border-blue-200 rounded-lg shadow p-6 flex items-center justify-between">
+        <div class="bg-green-50 border border-green-200 rounded-lg shadow p-6 flex items-center justify-between">
             <div>
-                <h3 class="font-bold text-blue-800">Is this your item?</h3>
-                <p class="text-sm text-blue-600 mt-1">If you recognise this as your lost item, submit a claim with proof of ownership to get it back.</p>
+                <h3 class="font-bold text-green-800">Is this your item?</h3>
+                <p class="text-sm text-green-600 mt-1">If you recognise this as your lost item, submit a claim with proof of ownership to get it back.</p>
             </div>
             <a href="{{ route('claims.claim-found', $foundItem) }}"
-               class="shrink-0 bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition font-medium text-sm">
+               class="shrink-0 bg-green-600 text-white px-5 py-2.5 rounded-lg hover:bg-green-700 transition font-medium text-sm">
                 This Is My Item — Claim
             </a>
         </div>
@@ -91,15 +91,15 @@
 
         @if($matches->count() > 0)
         <div class="space-y-4">
-            <h3 class="text-lg font-bold text-blue-700">
+            <h3 class="text-lg font-bold text-green-700">
                 Matched Lost Item Reports ({{ $matches->count() }})
             </h3>
 
             @foreach($matches as $match)
-            <div class="bg-white rounded-lg shadow overflow-hidden border-2 {{ $match->confidence_score >= 90 ? 'border-blue-400' : 'border-gray-200' }}">
-                <div class="flex items-center justify-between px-5 py-3 {{ $match->confidence_score >= 90 ? 'bg-blue-50' : 'bg-gray-50' }}">
+            <div class="bg-white rounded-lg shadow overflow-hidden border-2 {{ $match->confidence_score >= 90 ? 'border-green-400' : 'border-gray-200' }}">
+                <div class="flex items-center justify-between px-5 py-3 {{ $match->confidence_score >= 90 ? 'bg-green-50' : 'bg-gray-50' }}">
                     <div class="flex items-center gap-3">
-                        <span class="text-2xl font-bold {{ $match->confidence_score >= 90 ? 'text-blue-600' : 'text-yellow-600' }}">
+                        <span class="text-2xl font-bold {{ $match->confidence_score >= 90 ? 'text-green-600' : 'text-yellow-600' }}">
                             {{ $match->confidence_score }}%
                         </span>
                         <span class="text-sm text-gray-500">confidence match</span>
@@ -131,7 +131,7 @@
                             <div class="flex items-center gap-2 text-sm">
                                 <span class="font-medium text-gray-600">Owner:</span>
                                 <div class="flex items-center gap-1.5">
-                                    <div class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[10px] font-bold">
+                                    <div class="w-5 h-5 rounded-full bg-green-100 text-green-700 flex items-center justify-center text-[10px] font-bold">
                                         {{ strtoupper(substr($match->lostItem->user->name, 0, 1)) }}
                                     </div>
                                     <span class="text-gray-800">{{ $match->lostItem->user->name }}</span>
@@ -146,7 +146,7 @@
                                 <span class="font-medium text-gray-600">Date Lost:</span>
                                 <span class="text-gray-800">{{ $match->lostItem->date_lost }}</span>
                             </p>
-                            <p class="text-xs font-mono text-blue-600">{{ $match->lostItem->tracking_id }}</p>
+                            <p class="text-xs font-mono text-green-600">{{ $match->lostItem->tracking_id }}</p>
                         </div>
                     </div>
 
@@ -164,7 +164,7 @@
 
                     <div class="mt-4 flex flex-wrap gap-2">
                         <a href="{{ route('messages.show', $match->id) }}"
-                           class="inline-flex items-center gap-1.5 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
+                           class="inline-flex items-center gap-1.5 bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                             </svg>

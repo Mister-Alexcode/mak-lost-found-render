@@ -16,21 +16,21 @@
                 <div class="space-y-4">
 
                     {{-- In-App (always on) --}}
-                    <label class="flex items-start gap-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <label class="flex items-start gap-4 p-4 bg-green-50 border border-green-200 rounded-lg">
                         <input type="checkbox" checked disabled
-                               class="mt-0.5 rounded border-gray-300 text-blue-600">
+                               class="mt-0.5 rounded border-gray-300 text-green-600">
                         <div>
                             <p class="font-medium text-gray-800">In-App Notifications</p>
                             <p class="text-sm text-gray-500">Always enabled. You'll see notifications in the bell icon and notifications page.</p>
                         </div>
-                        <span class="ml-auto text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full whitespace-nowrap">Always on</span>
+                        <span class="ml-auto text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full whitespace-nowrap">Always on</span>
                     </label>
 
                     {{-- Email --}}
                     <label class="flex items-start gap-4 p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition">
                         <input type="checkbox" name="email" value="1"
                                {{ !empty($prefs['email']) ? 'checked' : '' }}
-                               class="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                               class="mt-0.5 rounded border-gray-300 text-green-600 focus:ring-green-500">
                         <div>
                             <p class="font-medium text-gray-800">Email Notifications</p>
                             <p class="text-sm text-gray-500">Receive notifications at <strong>{{ Auth::user()->email }}</strong></p>
@@ -42,7 +42,7 @@
                         <input type="checkbox" name="sms" value="1"
                                {{ !empty($prefs['sms']) ? 'checked' : '' }}
                                {{ Auth::user()->phone_number ? '' : 'disabled' }}
-                               class="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                               class="mt-0.5 rounded border-gray-300 text-green-600 focus:ring-green-500">
                         <div>
                             <p class="font-medium text-gray-800">SMS Notifications</p>
                             @if(Auth::user()->phone_number)
@@ -58,7 +58,7 @@
                         <input type="checkbox" name="whatsapp" value="1"
                                {{ !empty($prefs['whatsapp']) ? 'checked' : '' }}
                                {{ Auth::user()->phone_number ? '' : 'disabled' }}
-                               class="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                               class="mt-0.5 rounded border-gray-300 text-green-600 focus:ring-green-500">
                         <div>
                             <p class="font-medium text-gray-800">WhatsApp Notifications</p>
                             @if(Auth::user()->phone_number)
@@ -73,7 +73,7 @@
 
                 <div class="mt-6">
                     <button type="submit"
-                            class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                            class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
                         Save Preferences
                     </button>
                 </div>

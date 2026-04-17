@@ -13,7 +13,7 @@
         {{-- Stats --}}
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div class="bg-white rounded-lg shadow p-4 text-center">
-                <p class="text-3xl font-bold text-blue-600">{{ $stats['lost_items'] }}</p>
+                <p class="text-3xl font-bold text-green-600">{{ $stats['lost_items'] }}</p>
                 <p class="text-sm text-gray-500 mt-1">Lost Reports</p>
             </div>
             <div class="bg-white rounded-lg shadow p-4 text-center">
@@ -46,9 +46,9 @@
                 <p class="text-xs text-yellow-600 mt-1">{{ $stats['pending_claims'] }} pending</p>
             </a>
             <a href="{{ route('admin.lost-items') }}"
-               class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center hover:bg-blue-100">
-                <p class="font-bold text-blue-700">Lost Items</p>
-                <p class="text-xs text-blue-600 mt-1">Manage all reports</p>
+               class="bg-green-50 border border-green-200 rounded-lg p-4 text-center hover:bg-green-100">
+                <p class="font-bold text-green-700">Lost Items</p>
+                <p class="text-xs text-green-600 mt-1">Manage all reports</p>
             </a>
             <a href="{{ route('admin.found-items') }}"
                class="bg-green-50 border border-green-200 rounded-lg p-4 text-center hover:bg-green-100">
@@ -116,7 +116,7 @@
                                 @endif
                                 <div class="flex gap-1">
                                     <a href="{{ route('messages.direct', $claim->match->lostItem->user) }}"
-                                       class="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded hover:bg-blue-100">
+                                       class="text-xs bg-green-50 text-green-600 px-2 py-1 rounded hover:bg-green-100">
                                         Msg Owner
                                     </a>
                                     <a href="{{ route('messages.direct', $claim->match->foundItem->user) }}"
@@ -130,7 +130,7 @@
                     </tbody>
                 </table>
                 <div class="mt-3">
-                    <a href="{{ route('admin.claims') }}" class="text-sm text-blue-600 hover:underline">
+                    <a href="{{ route('admin.claims') }}" class="text-sm text-green-600 hover:underline">
                         View all claims →
                     </a>
                 </div>

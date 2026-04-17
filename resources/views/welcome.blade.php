@@ -25,13 +25,13 @@
                 <a href="{{ route('leaderboard.index') }}" class="text-sm text-gray-600 hover:text-gray-900 hidden sm:inline">Leaderboard</a>
                 @auth
                     <a href="{{ route('dashboard') }}"
-                       class="bg-blue-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                       class="bg-green-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-green-700 transition">
                         Dashboard
                     </a>
                 @else
                     <a href="{{ route('login') }}" class="text-sm text-gray-600 hover:text-gray-900">Log in</a>
                     <a href="{{ route('register') }}"
-                       class="bg-blue-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                       class="bg-green-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-green-700 transition">
                         Register
                     </a>
                 @endauth
@@ -40,7 +40,7 @@
     </nav>
 
     {{-- Hero --}}
-    <section class="relative bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800 text-white py-24 px-4 text-center overflow-hidden">
+    <section class="relative bg-gradient-to-br from-green-700 via-green-600 to-green-800 text-white py-24 px-4 text-center overflow-hidden">
         <div class="absolute inset-0 opacity-10">
             <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <circle cx="20" cy="30" r="30" fill="white"/>
@@ -55,13 +55,13 @@
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight">
                 Lost something on campus?
             </h1>
-            <p class="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+            <p class="text-green-100 text-lg md:text-xl max-w-2xl mx-auto mb-10">
                 Report lost or found items and let our smart matching system reunite you with your belongings.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{{ route('register') }}"
-                   class="bg-white text-blue-700 font-bold px-8 py-3.5 rounded-lg hover:bg-blue-50 transition shadow-lg">
-                    Get Started Free
+                   class="bg-white text-green-700 font-bold px-8 py-3.5 rounded-lg hover:bg-green-50 transition shadow-lg">
+                    Get Started Now
                 </a>
                 <a href="{{ route('search.index') }}"
                    class="border-2 border-white/40 text-white font-bold px-8 py-3.5 rounded-lg hover:bg-white/10 transition">
@@ -78,15 +78,15 @@
             <div class="flex justify-center gap-8 sm:gap-16 mt-14">
                 <div>
                     <p class="text-3xl font-bold">{{ $totalLost }}</p>
-                    <p class="text-blue-200 text-sm">Lost Reports</p>
+                    <p class="text-green-200 text-sm">Lost Reports</p>
                 </div>
                 <div>
                     <p class="text-3xl font-bold">{{ $totalFound }}</p>
-                    <p class="text-blue-200 text-sm">Found Reports</p>
+                    <p class="text-green-200 text-sm">Found Reports</p>
                 </div>
                 <div>
                     <p class="text-3xl font-bold">{{ $totalReturned }}</p>
-                    <p class="text-blue-200 text-sm">Items Returned</p>
+                    <p class="text-green-200 text-sm">Items Returned</p>
                 </div>
             </div>
         </div>
@@ -94,12 +94,12 @@
 
     {{-- How it works --}}
     <section class="py-20 px-4 max-w-6xl mx-auto">
-        <p class="text-sm font-semibold text-blue-600 text-center uppercase tracking-wider mb-2">Simple Process</p>
+        <p class="text-sm font-semibold text-green-600 text-center uppercase tracking-wider mb-2">Simple Process</p>
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">How it works</h2>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div class="relative">
-                <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                 </div>
@@ -149,7 +149,7 @@
         <div class="max-w-6xl mx-auto">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
                 <div>
-                    <p class="text-sm font-semibold text-blue-600 uppercase tracking-wider mb-2">Campus Map</p>
+                    <p class="text-sm font-semibold text-green-600 uppercase tracking-wider mb-2">Campus Map</p>
                     <h2 class="text-3xl font-bold text-gray-800 mb-4">Pin-point where you lost it</h2>
                     <p class="text-gray-600 mb-6">
                         Use our interactive map to mark the exact location where you lost or found an item
@@ -166,7 +166,7 @@
                             Green markers show found item locations
                         </li>
                         <li class="flex items-center gap-3">
-                            <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
                             Click anywhere on the map to pin a location when reporting
                         </li>
                     </ul>
@@ -181,12 +181,12 @@
     {{-- Features --}}
     <section class="bg-gray-50 py-20 px-4">
         <div class="max-w-6xl mx-auto">
-            <p class="text-sm font-semibold text-blue-600 text-center uppercase tracking-wider mb-2">Features</p>
+            <p class="text-sm font-semibold text-green-600 text-center uppercase tracking-wider mb-2">Features</p>
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Why use MAK Lost & Found?</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </div>
@@ -259,10 +259,10 @@
     <section class="py-20 px-4 text-center bg-white">
         <div class="max-w-2xl mx-auto">
             <h2 class="text-3xl font-bold text-gray-800 mb-4">Ready to find your item?</h2>
-            <p class="text-gray-600 mb-8">Join the Makerere University Lost & Found community today. It's free.</p>
+            <p class="text-gray-600 mb-8">Join the Makerere University Lost & Found community today.</p>
             <a href="{{ route('register') }}"
-               class="inline-block bg-blue-600 text-white font-bold px-10 py-3.5 rounded-lg hover:bg-blue-700 transition shadow-lg">
-                Create a Free Account
+               class="inline-block bg-green-600 text-white font-bold px-10 py-3.5 rounded-lg hover:bg-green-700 transition shadow-lg">
+                Create an Account
             </a>
         </div>
     </section>
@@ -271,7 +271,7 @@
     <footer class="bg-gray-900 text-gray-400 text-sm py-8 px-4">
         <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-2">
-                <div class="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
+                <div class="w-6 h-6 bg-green-600 rounded flex items-center justify-center">
                     <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>

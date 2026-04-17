@@ -25,21 +25,27 @@ class NotificationController extends Controller
         return back();
     }
 
-    public function visit(ItemNotification $notification)
+    public function visit(\Illuminate\Http\Request $request, ItemNotification $notification)
     {
         if ($notification->user_id !== Auth::id()) abort(403);
         $notification->update(['is_read' => true]);
 
         $link = $notification->link;
-        $appHost = parse_url(config('app.url'), PHP_URL_HOST);
-        $linkHost = $link ? parse_url($link, PHP_URL_HOST) : null;
+        if (!$link) {
+            return redirect()->route('notifications.index');
+        }
 
-        $isSafe = $link && (
-            Str::startsWith($link, '/') ||
-            ($linkHost && $appHost && $linkHost === $appHost)
-        );
+        $parts = parse_url($link);
+        $path = $parts['path'] ?? '/';
+        $suffix = (isset($parts['query']) ? '?' . $parts['query'] : '')
+            . (isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
 
-        return redirect($isSafe ? $link : route('notifications.index'));
+        $base = rtrim(parse_url(config('app.url'), PHP_URL_PATH) ?? '', '/');
+        if ($base && !Str::startsWith($path, $base . '/') && $path !== $base) {
+            $path = $base . $path;
+        }
+
+        return redirect()->away($request->getSchemeAndHttpHost() . $path . $suffix);
     }
 
     public function markAllRead()

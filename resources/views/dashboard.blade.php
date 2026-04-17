@@ -25,7 +25,7 @@
         {{-- Stats Row --}}
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div class="bg-white rounded-lg shadow p-4 text-center">
-                <p class="text-3xl font-bold text-blue-600">{{ $lostCount }}</p>
+                <p class="text-3xl font-bold text-green-600">{{ $lostCount }}</p>
                 <p class="text-xs text-gray-500 mt-1">{{ Auth::user()->isAdmin() ? 'Total' : 'My' }} Lost Reports</p>
             </div>
             <div class="bg-white rounded-lg shadow p-4 text-center">
@@ -64,9 +64,9 @@
                 <p class="text-xs text-yellow-100 mt-1">{{ $pendingClaims }} pending</p>
             </a>
             <a href="{{ route('lost-items.index') }}"
-               class="bg-blue-600 text-white rounded-lg p-4 text-center hover:bg-blue-700 transition">
+               class="bg-green-600 text-white rounded-lg p-4 text-center hover:bg-green-700 transition">
                 <p class="font-bold">All Lost Items</p>
-                <p class="text-xs text-blue-200 mt-1">{{ $lostCount }} reports</p>
+                <p class="text-xs text-green-200 mt-1">{{ $lostCount }} reports</p>
             </a>
             <a href="{{ route('found-items.index') }}"
                class="bg-green-600 text-white rounded-lg p-4 text-center hover:bg-green-700 transition">
@@ -82,9 +82,9 @@
         @else
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <a href="{{ route('lost-items.create') }}"
-               class="bg-blue-600 text-white rounded-lg p-4 text-center hover:bg-blue-700 transition">
+               class="bg-green-600 text-white rounded-lg p-4 text-center hover:bg-green-700 transition">
                 <p class="text-lg font-bold">+ Report Lost</p>
-                <p class="text-xs text-blue-200 mt-1">I lost something</p>
+                <p class="text-xs text-green-200 mt-1">I lost something</p>
             </a>
             <a href="{{ route('found-items.create') }}"
                class="bg-green-600 text-white rounded-lg p-4 text-center hover:bg-green-700 transition">
@@ -115,12 +115,12 @@
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex justify-between items-center mb-3">
                 <h3 class="font-bold text-gray-800">My Lost Items</h3>
-                <a href="{{ route('lost-items.index') }}" class="text-sm text-blue-600 hover:underline">View All Lost Items</a>
+                <a href="{{ route('lost-items.index') }}" class="text-sm text-green-600 hover:underline">View All Lost Items</a>
             </div>
             <div class="space-y-2">
                 @foreach($myLostItems as $item)
                 <a href="{{ route('lost-items.show', $item) }}"
-                   class="flex items-center justify-between p-3 rounded-lg border hover:bg-blue-50 transition">
+                   class="flex items-center justify-between p-3 rounded-lg border hover:bg-green-50 transition">
                     <div class="flex items-center gap-3">
                         @if($item->photo)
                             <img src="{{ asset('storage/' . $item->photo) }}" class="w-10 h-10 rounded object-cover" alt="">
@@ -215,7 +215,7 @@
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex justify-between items-center mb-3">
                 <h3 class="font-bold text-gray-800">Reward Points Progress</h3>
-                <a href="{{ route('leaderboard.index') }}" class="text-sm text-blue-600 hover:underline">Leaderboard</a>
+                <a href="{{ route('leaderboard.index') }}" class="text-sm text-green-600 hover:underline">Leaderboard</a>
             </div>
             <div class="flex items-center gap-4">
                 <div class="text-3xl font-bold text-orange-600">{{ $pts }}</div>
@@ -275,7 +275,7 @@
             <h3 class="text-lg font-bold mb-2 text-gray-800">Getting Started</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
                 <div class="flex items-start gap-2">
-                    <span class="text-blue-500 font-bold">1.</span>
+                    <span class="text-green-500 font-bold">1.</span>
                     <p>Report your lost item — describe it in detail for better matching.</p>
                 </div>
                 <div class="flex items-start gap-2">

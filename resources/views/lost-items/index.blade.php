@@ -3,7 +3,7 @@
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">All Lost Item Reports</h2>
             <a href="{{ route('lost-items.create') }}"
-               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+               class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm">
                 + Report Lost Item
             </a>
         </div>
@@ -15,7 +15,7 @@
             <div class="bg-white p-8 rounded shadow text-center text-gray-500">
                 <p class="text-lg">No lost items reported yet.</p>
                 <a href="{{ route('lost-items.create') }}"
-                   class="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                   class="mt-4 inline-block bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
                     Report a Lost Item
                 </a>
             </div>
@@ -39,14 +39,14 @@
                     @if($item->reward_offer)
                         <p class="text-sm text-green-700 font-medium mt-1">Reward: {{ $item->reward_offer }}</p>
                     @endif
-                    <p class="text-xs text-blue-600 font-mono mt-1">{{ $item->tracking_id }}</p>
+                    <p class="text-xs text-green-600 font-mono mt-1">{{ $item->tracking_id }}</p>
                     <span class="inline-block mt-2 px-2 py-1 text-xs rounded
                         {{ $item->status === 'active' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700' }}">
                         {{ ucfirst($item->status) }}
                     </span>
                     <div class="mt-3 flex gap-2">
                         <a href="{{ route('lost-items.show', $item) }}"
-                           class="text-sm bg-blue-50 text-blue-600 px-3 py-1 rounded hover:bg-blue-100">
+                           class="text-sm bg-green-50 text-green-600 px-3 py-1 rounded hover:bg-green-100">
                             View
                         </a>
                         @if($isAdmin || $item->user_id === Auth::id())

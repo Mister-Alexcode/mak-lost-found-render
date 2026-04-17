@@ -126,11 +126,15 @@ class FoundItemController extends Controller
                         'match_status'     => 'pending',
                     ]);
 
+                    $isHighValue = $lostItem->is_high_value || $foundItem->is_high_value;
                     NotificationDispatcher::send(
                         $lostItem->user,
                         'match_found',
-                        'Great news! Someone found your lost ' . $lostItem->item_name
-                            . ' and reported it (' . $score . '% match). Chat with the finder to confirm and reclaim your item.',
+                        $isHighValue
+                            ? 'Great news! Someone found your lost ' . $lostItem->item_name
+                                . ' (' . $score . '% match). Please visit the admin office with proof of ownership — an administrator will verify and hand over the item.'
+                            : 'Great news! Someone found your lost ' . $lostItem->item_name
+                                . ' and reported it (' . $score . '% match). Chat with the finder to confirm and reclaim your item.',
                         route('lost-items.show', $lostItem->id)
                     );
                 }
@@ -149,14 +153,41 @@ class FoundItemController extends Controller
             }
         }
         foreach ($bestPerUser as $match) {
+            $isHighValue = $match->lostItem->is_high_value || $match->foundItem->is_high_value;
             NotificationDispatcher::send(
                 $match->lostItem->user,
                 'match_found',
-                'Good news! Someone may have found your lost '
-                    . $match->lostItem->item_name
-                    . '! Confidence score: ' . $match->confidence_score . '%. Click here to view the match and reclaim your item.',
+                $isHighValue
+                    ? 'Good news! Someone may have found your lost ' . $match->lostItem->item_name
+                        . ' (' . $match->confidence_score . '% match). Please visit the admin office with proof of ownership — an administrator will verify and hand over the item.'
+                    : 'Good news! Someone may have found your lost ' . $match->lostItem->item_name
+                        . '! Confidence score: ' . $match->confidence_score . '%. Click here to view the match and reclaim your item.',
                 route('lost-items.show', $match->lostItem->id)
             );
+        }
+
+        if ($foundItem->is_high_value) {
+            NotificationDispatcher::send(
+                $foundItem->user,
+                'match_found',
+                'Thank you for reporting the ' . $foundItem->item_name
+                    . '. This item is high-value — please deliver it to the admin office at your earliest convenience. An administrator will verify ownership with the claimant and handle the handover.',
+                route('found-items.show', $foundItem->id)
+            );
+
+            $admins = \App\Models\User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                NotificationDispatcher::send(
+                    $admin,
+                    'match_found',
+                    '[High-Value] ' . $foundItem->user->name . ' reported a found ' . $foundItem->item_name
+                        . '. Awaiting delivery to admin office.',
+                    route('admin.found-items')
+                );
+            }
+
+            return redirect()->route('found-items.index')
+                ->with('success', 'Thank you! Please deliver this high-value item to the admin office for verified handover. Tracking ID: ' . $foundItem->tracking_id);
         }
 
         return redirect()->route('found-items.index')

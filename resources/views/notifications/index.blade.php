@@ -5,7 +5,7 @@
             @if($notifications->where('is_read', false)->count() > 0)
             <form method="POST" action="{{ route('notifications.read-all') }}">
                 @csrf
-                <button class="text-sm text-blue-600 hover:underline">Mark all as read</button>
+                <button class="text-sm text-green-600 hover:underline">Mark all as read</button>
             </form>
             @endif
         </div>
@@ -21,14 +21,14 @@
             <div class="space-y-2">
                 @foreach($notifications as $n)
                 <div class="bg-white rounded-lg shadow p-4 flex items-start gap-3
-                    {{ $n->is_read ? 'opacity-70' : 'border-l-4 border-blue-500' }}">
+                    {{ $n->is_read ? 'opacity-70' : 'border-l-4 border-green-500' }}">
                     <div class="flex-1">
                         @if($n->link)
                         <a href="{{ route('notifications.visit', $n) }}" class="block group">
-                            <p class="text-sm {{ $n->is_read ? 'text-gray-600' : 'text-gray-800 font-medium' }} group-hover:text-blue-600 transition">
+                            <p class="text-sm {{ $n->is_read ? 'text-gray-600' : 'text-gray-800 font-medium' }} group-hover:text-green-600 transition">
                                 {{ $n->message }}
                             </p>
-                            <span class="text-xs text-blue-500 group-hover:underline">View details &rarr;</span>
+                            <span class="text-xs text-green-500 group-hover:underline">View details &rarr;</span>
                         </a>
                         @else
                         <p class="text-sm {{ $n->is_read ? 'text-gray-600' : 'text-gray-800 font-medium' }}">

@@ -24,7 +24,7 @@
     </form>
 
     <div class="mt-4 pt-4 border-t text-center">
-        <a href="{{ route('password.otp.request') }}" class="text-sm text-blue-600 hover:underline font-medium">
+        <a href="{{ route('password.otp.request') }}" class="text-sm text-green-600 hover:underline font-medium">
             Reset via WhatsApp or verification code instead
         </a>
     </div>

@@ -57,11 +57,11 @@
                         <td class="px-4 py-3">
                             <div class="flex flex-wrap gap-1">
                                 <a href="{{ route('admin.users.edit', $user) }}"
-                                   class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 font-medium">
+                                   class="text-xs bg-green-50 text-green-700 px-2 py-1 rounded hover:bg-green-100 font-medium">
                                     Edit
                                 </a>
                                 <a href="{{ route('messages.direct', $user) }}"
-                                   class="text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded hover:bg-indigo-100 font-medium">
+                                   class="text-xs bg-green-50 text-green-700 px-2 py-1 rounded hover:bg-green-100 font-medium">
                                     Message
                                 </a>
                                 @if($user->is_blocked)

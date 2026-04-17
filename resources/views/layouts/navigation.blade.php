@@ -13,8 +13,8 @@
                 <!-- Navigation Links -->
                 @php
                     $navBase = 'group inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-150';
-                    $navIdle = 'text-gray-600 hover:text-blue-700 hover:bg-blue-50';
-                    $navActive = 'text-white bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 shadow-sm shadow-blue-500/30';
+                    $navIdle = 'text-gray-600 hover:text-green-700 hover:bg-green-50';
+                    $navActive = 'text-white bg-gradient-to-r from-green-500 via-green-600 to-green-600 shadow-sm shadow-green-500/30';
                 @endphp
                 @auth
                 @php
@@ -120,7 +120,7 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition">
-                            <div class="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">
+                            <div class="w-7 h-7 rounded-full bg-green-100 text-green-700 flex items-center justify-center text-xs font-bold">
                                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </div>
                             <span class="hidden lg:inline">{{ Auth::user()->name }}</span>
@@ -158,7 +158,7 @@
                 {{-- Guest links --}}
                 <a href="{{ route('login') }}" class="text-sm text-gray-600 hover:text-gray-900">Log in</a>
                 <a href="{{ route('register') }}"
-                   class="bg-blue-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                   class="bg-green-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-green-700 transition">
                     Register
                 </a>
                 @endauth
@@ -217,7 +217,7 @@
         @auth
         <div class="pt-3 pb-2 border-t border-gray-200">
             <div class="px-4 flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-bold">
+                <div class="w-9 h-9 rounded-full bg-green-100 text-green-700 flex items-center justify-center text-sm font-bold">
                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                 </div>
                 <div>
