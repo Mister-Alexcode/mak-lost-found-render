@@ -34,6 +34,9 @@
                         <div>
                             <p class="font-medium text-gray-800">Email Notifications</p>
                             <p class="text-sm text-gray-500">Receive notifications at <strong>{{ Auth::user()->email }}</strong></p>
+                            <p class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1 mt-2 inline-block">
+                                Tip: if emails don't appear in your inbox, check your spam folder — or enable WhatsApp below for faster, more reliable delivery.
+                            </p>
                         </div>
                     </label>
 

@@ -268,19 +268,19 @@
     </section>
 
     {{-- Footer --}}
-    <footer class="bg-gray-900 text-gray-400 text-sm py-8 px-4">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 bg-green-600 rounded flex items-center justify-center">
-                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                </div>
-                <span>MAK Lost & Found</span>
+    <footer class="bg-gray-900 text-gray-400 text-sm pt-12 pb-6 px-4">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="flex items-center justify-center gap-2 mb-4">
+                <img src="{{ asset('logo.svg') }}" alt="MAK Lost & Found" class="w-8 h-8">
+                <span class="text-white font-bold text-base">MAK Lost & Found</span>
             </div>
-            <div class="text-center sm:text-right">
-                <p>Makerere University — IST 3201 Final Year Project</p>
-                <p class="text-gray-500 mt-0.5">Group 46 — Supervised by Dr. Nasser Kimbugwe</p>
+            <p class="max-w-xl mx-auto leading-relaxed text-gray-400">
+                A smart platform reuniting Makerere University students and staff with their lost
+                belongings through a multi-criteria matching algorithm, interactive campus mapping,
+                and verified returns.
+            </p>
+            <div class="mt-8 pt-6 border-t border-gray-800 text-gray-500 text-xs">
+                &copy; {{ date('Y') }} MAK Lost & Found &nbsp;·&nbsp; Makerere University
             </div>
         </div>
     </footer>

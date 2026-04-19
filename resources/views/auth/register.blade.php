@@ -4,21 +4,21 @@
 
         <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Full Name')" />
+            <x-input-label for="name">Full Name <span class="text-red-500">*</span></x-input-label>
             <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
         <!-- Email Address -->
         <div class="mt-4">
-            <x-input-label for="email" :value="__('Email Address')" />
+            <x-input-label for="email">Email Address <span class="text-red-500">*</span></x-input-label>
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Phone Number (required) -->
         <div class="mt-4">
-            <x-input-label for="phone_number" :value="__('Phone Number (WhatsApp)')" />
+            <x-input-label for="phone_number">Phone Number (WhatsApp) <span class="text-red-500">*</span></x-input-label>
             <x-text-input id="phone_number" class="block mt-1 w-full" type="tel" name="phone_number"
                           :value="old('phone_number')" required
                           placeholder="e.g. 0701234567 or +256701234567" />
@@ -37,7 +37,7 @@
 
         <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password">Password <span class="text-red-500">*</span></x-input-label>
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password" name="password"
                             required autocomplete="new-password" />
@@ -46,7 +46,7 @@
 
         <!-- Confirm Password -->
         <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+            <x-input-label for="password_confirmation">Confirm Password <span class="text-red-500">*</span></x-input-label>
             <x-text-input id="password_confirmation" class="block mt-1 w-full"
                             type="password" name="password_confirmation" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
@@ -54,7 +54,7 @@
 
         <!-- Verification Method -->
         <div class="mt-4">
-            <x-input-label :value="__('Verify your account via')" />
+            <x-input-label>Verify your account via <span class="text-red-500">*</span></x-input-label>
             <div class="mt-2 flex gap-4">
                 <label class="flex items-center gap-2 cursor-pointer px-4 py-2 border rounded-lg hover:bg-gray-50 transition">
                     <input type="radio" name="verify_via" value="email" {{ old('verify_via', 'email') === 'email' ? 'checked' : '' }}
@@ -73,6 +73,9 @@
                     </div>
                 </label>
             </div>
+            <p class="mt-2 text-xs text-gray-500">
+                WhatsApp delivers instantly. Emails may occasionally land in the spam folder.
+            </p>
             <div class="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg text-xs text-green-800">
                 <p class="font-semibold mb-1">To receive WhatsApp OTP codes, first send:</p>
                 <p class="font-mono bg-white px-2 py-1 rounded border border-green-200 inline-block">join nothing-gun</p>

@@ -28,12 +28,17 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name'         => ['required', 'string', 'max:255'],
-            'email'        => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'name'         => ['required', 'string', 'min:2', 'max:255', 'regex:/^[a-zA-Z\s\-\']+$/'],
+            'email'        => ['required', 'string', 'lowercase', 'email:rfc,dns', 'max:255', 'unique:' . User::class],
             'student_id'   => ['nullable', 'string', 'max:20'],
             'phone_number' => ['required', 'string', 'max:20', 'regex:/^(\+?256|0)[7][0-9]{8}$/'],
             'password'     => ['required', 'confirmed', Rules\Password::defaults()],
             'verify_via'   => ['required', 'in:email,whatsapp'],
+        ], [
+            'name.regex'   => 'Name may only contain letters, spaces, hyphens, and apostrophes.',
+            'name.min'     => 'Name must be at least 2 characters.',
+            'email.email'  => 'Please enter a valid email address with a real domain.',
+            'phone_number.regex' => 'Enter a valid Ugandan phone number (e.g., 0771234567 or +256771234567).',
         ]);
 
         // Check phone uniqueness
