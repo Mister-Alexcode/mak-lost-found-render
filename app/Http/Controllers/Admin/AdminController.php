@@ -193,10 +193,14 @@ class AdminController extends Controller
     {
         $redemption->update(['status' => 'claimed']);
 
+        $message = $redemption->reward_tier === 'certificate'
+            ? 'Your Certificate of Appreciation has been approved! You can now download it from your Rewards page.'
+            : 'Your reward redemption (' . str_replace('_', ' ', $redemption->reward_tier) . ') has been approved! Please collect it from the admin office.';
+
         NotificationDispatcher::send(
             $redemption->user,
             'redemption_approved',
-            'Your reward redemption (' . $redemption->reward_tier . ') has been approved! Please collect it from the admin office.'
+            $message
         );
 
         return back()->with('success', 'Redemption approved.');

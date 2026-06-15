@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -14,11 +15,16 @@ return new class extends Migration {
             });
         }
 
-        // Make claim_id nullable so messages can exist without a claim (direct/admin messaging)
-        // Also add match_id for match-based conversations without a claim
-        Schema::table('messages', function (Blueprint $table) {
-            $table->foreignId('claim_id')->nullable()->change();
-        });
+        // Make claim_id nullable so messages can exist without a claim (direct/admin messaging).
+        // The original create_messages_table migration now defines claim_id as nullable from the
+        // start, so this change() is only needed for legacy databases that ran before that fix.
+        // SQLite (used in tests) would require doctrine/dbal to run change(), so we skip it there
+        // — the test schema already has the right shape from the create migration.
+        if (DB::getDriverName() !== 'sqlite') {
+            Schema::table('messages', function (Blueprint $table) {
+                $table->foreignId('claim_id')->nullable()->change();
+            });
+        }
 
         if (!Schema::hasColumn('messages', 'match_id')) {
             Schema::table('messages', function (Blueprint $table) {

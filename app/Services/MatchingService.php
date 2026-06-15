@@ -78,7 +78,7 @@ class MatchingService
      * Location synonyms for Makerere University campus.
      */
     private static array $locationSynonyms = [
-        'library'    => ['library', 'main library', 'africana library', 'lib', 'reading room'],
+        'library'    => ['library', 'main library', 'africa library', 'lib', 'reading room'],
         'cit'        => ['cit', 'college of computing', 'cocis', 'block b', 'computer lab'],
         'senate'     => ['senate', 'senate building', 'admin block', 'administration'],
         'freedom'    => ['freedom square', 'freedom', 'main square', 'square'],
@@ -88,9 +88,9 @@ class MatchingService
         'nsibirwa'   => ['nsibirwa', 'nsibirwa hall'],
         'complex'    => ['complex', 'the complex', 'new complex'],
         'wandegeya'  => ['wandegeya', 'wandegeya gate', 'main gate'],
-        'cees'       => ['cees', 'school of education', 'education'],
+        'cees'       => ['cees', 'school of education', 'education', 'college of education and external services'],
         'cedat'      => ['cedat', 'engineering', 'college of engineering'],
-        'canteen'    => ['canteen', 'cafeteria', 'dining', 'mess', 'food court'],
+        'canteen'    => ['canteen', 'cafeteria', 'dining', 'mess', 'food palce'],
         'parking'    => ['parking', 'parking lot', 'car park'],
         'sports'     => ['sports', 'sports ground', 'field', 'pitch', 'gymnasium', 'gym'],
         'chs'        => ['chs', 'college of health', 'medical school', 'mulago'],
@@ -125,7 +125,7 @@ class MatchingService
 
     public function findMatchesForFoundItem(FoundItem $foundItem)
     {
-        // Exclude lost items auto-created by the claim-found-item flow — they are
+        // Excludes lost items auto-created by the claim-found-item flow, they are
         // scoped to a single found item and should not generate further matches.
         $lostItems = LostItem::where('status', 'active')
             ->where(function ($q) {
@@ -154,18 +154,7 @@ class MatchingService
         return $matches->sortByDesc('confidence_score');
     }
 
-    /**
-     * Calculate a match score between a lost item and a found item.
-     *
-     * Scoring breakdown (max 100):
-     *   Category match:       25 pts
-     *   Color similarity:     15 pts (with synonym awareness)
-     *   Brand similarity:     10 pts (with alias matching)
-     *   Location similarity:  15 pts (with campus synonym matching)
-     *   Date proximity:       10 pts
-     *   Description analysis: 15 pts (cross-field text similarity)
-     *   Item name analysis:   10 pts (fuzzy + keyword matching)
-     */
+     //Calculate a match score between a lost item and a found item.
     private function calculateScore(LostItem $lost, FoundItem $found): float
     {
         $score = 0;

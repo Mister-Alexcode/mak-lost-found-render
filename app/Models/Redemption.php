@@ -13,9 +13,9 @@ class Redemption extends Model {
 
     public static function tiers(): array {
         return [
-            ['points' => 50,  'tier' => 'certificate',  'label' => 'Certificate of Appreciation',   'description' => 'A digital certificate recognising your contribution to the MAK community.'],
-            ['points' => 100, 'tier' => 'voucher',       'label' => 'Campus Voucher (UGX 5,000)',      'description' => 'A voucher redeemable at selected campus outlets.'],
-            ['points' => 200, 'tier' => 'trophy',        'label' => 'Community Hero Trophy',          'description' => 'A physical trophy awarded at the next student awards ceremony.'],
+            ['points' => 50,  'tier' => 'certificate',  'icon' => '📜', 'label' => 'Certificate of Appreciation', 'description' => 'A digital certificate recognising your contribution to the MAK community.'],
+            ['points' => 100, 'tier' => 'voucher',      'icon' => '🎟️', 'label' => 'Campus Voucher (UGX 5,000)',   'description' => 'A voucher redeemable at selected campus outlets.'],
+            ['points' => 200, 'tier' => 'voucher_10k',  'icon' => '🎟️', 'label' => 'Campus Voucher (UGX 10,000)',  'description' => 'A premium voucher redeemable at selected campus outlets.'],
         ];
     }
 }

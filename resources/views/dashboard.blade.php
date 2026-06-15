@@ -207,8 +207,8 @@
             $pts = Auth::user()->reward_points;
             $tiers = [
                 ['points' => 50,  'label' => 'Certificate'],
-                ['points' => 100, 'label' => 'Voucher'],
-                ['points' => 200, 'label' => 'Trophy'],
+                ['points' => 100, 'label' => 'Voucher (UGX 5,000)'],
+                ['points' => 200, 'label' => 'Voucher (UGX 10,000)'],
             ];
             $nextTier = collect($tiers)->first(fn($t) => $t['points'] > $pts);
         @endphp

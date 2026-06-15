@@ -105,6 +105,7 @@ Route::middleware('auth')->group(function () {
     // Redemptions
     Route::get('/redemptions', [RedemptionController::class, 'index'])->name('redemptions.index');
     Route::post('/redemptions', [RedemptionController::class, 'store'])->name('redemptions.store');
+    Route::get('/redemptions/{redemption}/certificate', [RedemptionController::class, 'certificate'])->name('redemptions.certificate');
 });
 
 // User search (for admin messaging)

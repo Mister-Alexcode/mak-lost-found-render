@@ -25,12 +25,7 @@
             @foreach($tiers as $tier)
             @php $canRedeem = $myPoints >= $tier['points']; @endphp
             <div class="bg-white rounded-lg shadow p-5 border-2 {{ $canRedeem ? 'border-orange-400' : 'border-gray-100' }}">
-                <div class="text-3xl mb-2">
-                    @if($tier['tier'] === 'certificate') 📜
-                    @elseif($tier['tier'] === 'voucher') 🎟️
-                    @else 🏆
-                    @endif
-                </div>
+                <div class="text-3xl mb-2">{{ $tier['icon'] }}</div>
                 <h4 class="font-bold text-gray-800">{{ $tier['label'] }}</h4>
                 <p class="text-sm text-gray-500 mt-1 mb-3">{{ $tier['description'] }}</p>
                 <p class="text-lg font-bold {{ $canRedeem ? 'text-orange-600' : 'text-gray-400' }}">
@@ -71,6 +66,7 @@
                         <th class="pb-2">Points Used</th>
                         <th class="pb-2">Status</th>
                         <th class="pb-2">Date</th>
+                        <th class="pb-2"></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y">
@@ -85,6 +81,14 @@
                             </span>
                         </td>
                         <td class="py-2 text-gray-500">{{ $r->created_at->format('d M Y') }}</td>
+                        <td class="py-2 text-right">
+                            @if($r->reward_tier === 'certificate' && $r->status === 'claimed')
+                            <a href="{{ route('redemptions.certificate', $r) }}"
+                               class="inline-flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700">
+                                📜 Download Certificate
+                            </a>
+                            @endif
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>

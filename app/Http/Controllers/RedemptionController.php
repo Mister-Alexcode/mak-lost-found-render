@@ -2,9 +2,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Redemption;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
 class RedemptionController extends Controller
 {
@@ -45,5 +47,25 @@ class RedemptionController extends Controller
         });
 
         return back()->with('success', 'Redemption request submitted! An admin will process it shortly.');
+    }
+
+    public function certificate(Redemption $redemption)
+    {
+        abort_unless($redemption->user_id === Auth::id(), Response::HTTP_FORBIDDEN);
+
+        if ($redemption->reward_tier !== 'certificate' || $redemption->status !== 'claimed') {
+            abort(Response::HTTP_FORBIDDEN, 'This certificate is not available yet.');
+        }
+
+        $reference = 'MAK-LF-' . str_pad((string) $redemption->id, 5, '0', STR_PAD_LEFT);
+
+        $pdf = Pdf::loadView('redemptions.certificate', [
+            'user'       => $redemption->user,
+            'redemption' => $redemption,
+            'issuedOn'   => $redemption->updated_at->format('d M Y'),
+            'reference'  => $reference,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->download('certificate-of-appreciation-' . $reference . '.pdf');
     }
 }
