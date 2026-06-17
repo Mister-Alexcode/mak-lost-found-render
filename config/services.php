@@ -41,4 +41,13 @@ return [
         'provider' => env('WHATSAPP_PROVIDER', 'log'),
     ],
 
+    'twilio' => [
+        'sid'           => env('TWILIO_SID'),
+        'token'         => env('TWILIO_AUTH_TOKEN'),
+        'whatsapp_from' => env('TWILIO_WHATSAPP_FROM', 'whatsapp:+14155238886'),
+        'sms_from'      => env('TWILIO_SMS_FROM'),
+        'meta_token'    => env('WHATSAPP_META_TOKEN'),
+        'meta_phone_id' => env('WHATSAPP_META_PHONE_ID'),
+    ],
+
 ];

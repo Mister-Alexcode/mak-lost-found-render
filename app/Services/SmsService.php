@@ -35,9 +35,9 @@ class SmsService
 
     private static function sendViaTwilio(string $phone, string $message): bool
     {
-        $sid   = env('TWILIO_SID');
-        $token = env('TWILIO_AUTH_TOKEN');
-        $from  = env('TWILIO_SMS_FROM');
+        $sid   = config('services.twilio.sid');
+        $token = config('services.twilio.token');
+        $from  = config('services.twilio.sms_from');
 
         if (!$sid || !$token || !$from) {
             Log::warning('SMS: Twilio credentials or TWILIO_SMS_FROM not configured');

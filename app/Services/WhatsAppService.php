@@ -40,9 +40,9 @@ class WhatsAppService
 
     private static function sendViaTwilio(string $phone, string $message): bool
     {
-        $sid   = env('TWILIO_SID');
-        $token = env('TWILIO_AUTH_TOKEN');
-        $from  = env('TWILIO_WHATSAPP_FROM', 'whatsapp:+14155238886');
+        $sid   = config('services.twilio.sid');
+        $token = config('services.twilio.token');
+        $from  = config('services.twilio.whatsapp_from', 'whatsapp:+14155238886');
 
         if (!$sid || !$token) {
             Log::warning('WhatsApp: Twilio credentials not configured');
@@ -75,8 +75,8 @@ class WhatsAppService
 
     private static function sendViaMeta(string $phone, string $message): bool
     {
-        $token   = env('WHATSAPP_META_TOKEN');
-        $phoneId = env('WHATSAPP_META_PHONE_ID');
+        $token   = config('services.twilio.meta_token');
+        $phoneId = config('services.twilio.meta_phone_id');
 
         if (!$token || !$phoneId) {
             Log::warning('WhatsApp: Meta Cloud API credentials not configured');
