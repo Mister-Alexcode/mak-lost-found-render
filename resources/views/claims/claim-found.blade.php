@@ -19,7 +19,7 @@
                 <p class="text-xs text-green-600 uppercase font-medium mb-2">Found Item You're Claiming</p>
                 <div class="flex gap-4">
                     @if($foundItem->photo)
-                        <img src="{{ asset('storage/' . $foundItem->photo) }}"
+                        <img src="{{ $foundItem->photo_url }}"
                              class="w-20 h-20 object-cover rounded" alt="">
                     @else
                         <div class="w-20 h-20 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-xs">No Photo</div>

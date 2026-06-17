@@ -24,7 +24,7 @@
                 @foreach($lostItems as $item)
                 <div class="bg-white rounded-lg shadow p-5 hover:shadow-md transition-shadow duration-200">
                     @if($item->photo)
-                        <img src="{{ asset('storage/' . $item->photo) }}"
+                        <img src="{{ $item->photo_url }}"
                              class="w-full h-40 object-cover rounded mb-3" alt="Item photo">
                     @else
                         <div class="w-full h-40 bg-gray-100 rounded mb-3 flex items-center justify-center text-gray-400">

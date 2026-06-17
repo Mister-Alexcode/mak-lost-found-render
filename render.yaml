@@ -1,0 +1,83 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Create the service from this file via: Render Dashboard → New → Blueprint.
+# Secrets (sync:false) are left blank here and filled in the Render dashboard.
+services:
+  - type: web
+    name: mak-lost-found
+    runtime: docker
+    plan: free
+    region: oregon          # change if you prefer frankfurt/singapore/ohio/virginia
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: APP_NAME
+        value: "MAK Lost & Found"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY            # run `php artisan key:generate --show` and paste here
+        sync: false
+      - key: APP_URL            # set to your Render URL, e.g. https://mak-lost-found.onrender.com
+        sync: false
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: LOG_LEVEL
+        value: error
+
+      # ---- External MySQL (Aiven / Clever Cloud / etc.) ----
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_DATABASE
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      # If your provider requires TLS (Aiven does), set this to the path of the
+      # bundled CA file, e.g. /var/www/html/storage/certs/ca.pem (see DEPLOY.md).
+      - key: MYSQL_ATTR_SSL_CA
+        sync: false
+
+      # ---- Sessions / cache / queue (no extra services needed) ----
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+
+      # ---- Mail (Gmail SMTP app password) ----
+      - key: MAIL_MAILER
+        value: smtp
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_ENCRYPTION
+        value: tls
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD       # 16-char Gmail app password (no spaces)
+        sync: false
+      - key: MAIL_FROM_ADDRESS
+        sync: false
+      - key: MAIL_FROM_NAME
+        value: "MAK Lost & Found"
+
+      # ---- Cloudinary (persistent image storage) ----
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+      # ---- WhatsApp / SMS (leave as log unless you set up Twilio/Meta) ----
+      - key: WHATSAPP_PROVIDER
+        value: log

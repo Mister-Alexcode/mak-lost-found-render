@@ -78,7 +78,7 @@
                 <div class="mt-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Photo</label>
                     @if($lostItem->photo)
-                        <img src="{{ asset('storage/' . $lostItem->photo) }}"
+                        <img src="{{ $lostItem->photo_url }}"
                              class="h-24 rounded mb-2" alt="Current photo">
                     @endif
                     <input type="file" name="photo" accept="image/*"

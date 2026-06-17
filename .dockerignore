@@ -1,0 +1,27 @@
+# Dependencies are installed fresh inside the image.
+/vendor
+/node_modules
+
+# Built assets are produced by the assets build stage.
+/public/build
+/public/storage
+
+# Never ship local environment / secrets or local DB.
+.env
+.env.*
+!.env.production.example
+
+# Local + VCS noise.
+.git
+.gitignore
+.github
+.idea
+.vscode
+.claude
+storage/logs/*.log
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*.php
+tests
+README.md
+DEPLOY.md

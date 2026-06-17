@@ -187,7 +187,7 @@
                 @foreach($lostItems as $item)
                 <div class="bg-white rounded-lg shadow p-4">
                     @if($item->photo)
-                        <img src="{{ asset('storage/' . $item->photo) }}"
+                        <img src="{{ $item->photo_url }}"
                              class="w-full h-36 object-cover rounded mb-3" alt="">
                     @else
                         <div class="w-full h-36 bg-gray-100 rounded mb-3 flex items-center justify-center text-gray-300 text-sm">
@@ -220,7 +220,7 @@
                 @foreach($foundItems as $item)
                 <div class="bg-white rounded-lg shadow p-4">
                     @if($item->photo)
-                        <img src="{{ asset('storage/' . $item->photo) }}"
+                        <img src="{{ $item->photo_url }}"
                              class="w-full h-36 object-cover rounded mb-3" alt="">
                     @else
                         <div class="w-full h-36 bg-gray-100 rounded mb-3 flex items-center justify-center text-gray-300 text-sm">

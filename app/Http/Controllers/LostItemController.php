@@ -54,7 +54,7 @@ class LostItemController extends Controller
 
         $photoPath = null;
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('lost-items', 'public');
+            $photoPath = \App\Services\ImageUploadService::store($request->file('photo'), 'lost-items');
         }
 
         $isHighValue = $request->boolean('is_high_value')
@@ -160,10 +160,8 @@ class LostItemController extends Controller
 
         $photoPath = $lostItem->photo;
         if ($request->hasFile('photo')) {
-            if ($lostItem->photo) {
-                Storage::disk('public')->delete($lostItem->photo);
-            }
-            $photoPath = $request->file('photo')->store('lost-items', 'public');
+            \App\Services\ImageUploadService::delete($lostItem->photo);
+            $photoPath = \App\Services\ImageUploadService::store($request->file('photo'), 'lost-items');
         }
 
         $lostItem->update([

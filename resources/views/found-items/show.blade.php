@@ -11,7 +11,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     @if($foundItem->photo)
-                        <img src="{{ asset('storage/' . $foundItem->photo) }}"
+                        <img src="{{ $foundItem->photo_url }}"
                              class="w-full h-56 object-cover rounded" alt="Item photo">
                     @else
                         <div class="w-full h-56 bg-gray-100 rounded flex items-center justify-center text-gray-400">
@@ -115,7 +115,7 @@
                         {{-- Owner's photo --}}
                         <div>
                             @if($match->lostItem->photo)
-                                <img src="{{ asset('storage/' . $match->lostItem->photo) }}"
+                                <img src="{{ $match->lostItem->photo_url }}"
                                      class="w-full h-48 object-cover rounded-lg" alt="Lost item photo">
                             @else
                                 <div class="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">

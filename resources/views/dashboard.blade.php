@@ -123,7 +123,7 @@
                    class="flex items-center justify-between p-3 rounded-lg border hover:bg-green-50 transition">
                     <div class="flex items-center gap-3">
                         @if($item->photo)
-                            <img src="{{ asset('storage/' . $item->photo) }}" class="w-10 h-10 rounded object-cover" alt="">
+                            <img src="{{ $item->photo_url }}" class="w-10 h-10 rounded object-cover" alt="">
                         @else
                             <div class="w-10 h-10 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs">N/A</div>
                         @endif
@@ -154,7 +154,7 @@
                    class="flex items-center justify-between p-3 rounded-lg border hover:bg-green-50 transition">
                     <div class="flex items-center gap-3">
                         @if($item->photo)
-                            <img src="{{ asset('storage/' . $item->photo) }}" class="w-10 h-10 rounded object-cover" alt="">
+                            <img src="{{ $item->photo_url }}" class="w-10 h-10 rounded object-cover" alt="">
                         @else
                             <div class="w-10 h-10 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs">N/A</div>
                         @endif
@@ -184,7 +184,7 @@
                    class="flex items-center justify-between p-3 rounded-lg border hover:bg-purple-50 transition">
                     <div class="flex items-center gap-3">
                         @if($item->photo)
-                            <img src="{{ asset('storage/' . $item->photo) }}" class="w-10 h-10 rounded object-cover" alt="">
+                            <img src="{{ $item->photo_url }}" class="w-10 h-10 rounded object-cover" alt="">
                         @else
                             <div class="w-10 h-10 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs">N/A</div>
                         @endif

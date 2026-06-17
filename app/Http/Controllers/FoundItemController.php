@@ -62,7 +62,7 @@ class FoundItemController extends Controller
             'longitude'     => 'nullable|numeric|between:-180,180',
         ]);
 
-        $photoPath = $request->file('photo')->store('found-items', 'public');
+        $photoPath = \App\Services\ImageUploadService::store($request->file('photo'), 'found-items');
 
         $isHighValue = $request->boolean('is_high_value')
             || in_array($request->category, ['Electronics']);
@@ -228,10 +228,8 @@ class FoundItemController extends Controller
 
         $photoPath = $foundItem->photo;
         if ($request->hasFile('photo')) {
-            if ($foundItem->photo) {
-                Storage::disk('public')->delete($foundItem->photo);
-            }
-            $photoPath = $request->file('photo')->store('found-items', 'public');
+            \App\Services\ImageUploadService::delete($foundItem->photo);
+            $photoPath = \App\Services\ImageUploadService::store($request->file('photo'), 'found-items');
         }
 
         $foundItem->update([

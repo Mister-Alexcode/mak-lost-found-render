@@ -77,7 +77,7 @@
                 <div class="mt-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Photo</label>
                     @if($foundItem->photo)
-                        <img src="{{ asset('storage/' . $foundItem->photo) }}"
+                        <img src="{{ $foundItem->photo_url }}"
                              class="h-24 rounded mb-2" alt="Current photo">
                         <p class="text-xs text-gray-400 mb-1">Current photo shown above. Upload new to replace.</p>
                     @endif
