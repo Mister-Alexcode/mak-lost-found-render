@@ -21,3 +21,5 @@ yarn-error.log
 /database/*.sql
 /database/backups
 /.claude
+/CLAUDE.md
+/DEPLOY.md
