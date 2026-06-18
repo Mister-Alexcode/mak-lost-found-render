@@ -58,6 +58,10 @@ return [
             // ],
         ],
 
+        'brevo' => [
+            'transport' => 'brevo',
+        ],
+
         'mailgun' => [
             'transport' => 'mailgun',
             // 'client' => [

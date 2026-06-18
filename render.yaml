@@ -52,19 +52,12 @@ services:
       - key: QUEUE_CONNECTION
         value: sync
 
-      # ---- Mail (Gmail SMTP app password) ----
+      # ---- Mail (Brevo HTTP API — Render blocks SMTP ports) ----
       - key: MAIL_MAILER
-        value: smtp
-      - key: MAIL_HOST
-        value: smtp.gmail.com
-      - key: MAIL_PORT
-        value: "587"
-      - key: MAIL_ENCRYPTION
-        value: tls
-      - key: MAIL_USERNAME
+        value: brevo
+      - key: BREVO_API_KEY
         sync: false
-      - key: MAIL_PASSWORD       # 16-char Gmail app password (no spaces)
-        sync: false
+      # Must be a sender address you've verified in Brevo (no domain needed)
       - key: MAIL_FROM_ADDRESS
         sync: false
       - key: MAIL_FROM_NAME
