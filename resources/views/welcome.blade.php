@@ -215,7 +215,7 @@
                     </div>
                     <h3 class="font-bold text-gray-800 mb-2">Reward Points</h3>
                     <p class="text-sm text-gray-600">
-                        Earn points for reporting found items (+10) and successful returns (+20). Redeem for prizes.
+                        Earn points for reporting found items (+10), returning an item to its owner (+20), and recovering your own (+10). Redeem for prizes.
                     </p>
                 </div>
                 <div class="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">

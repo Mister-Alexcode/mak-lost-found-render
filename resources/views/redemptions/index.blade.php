@@ -14,7 +14,8 @@
             <div class="text-sm text-gray-600 border-l pl-6">
                 <p class="font-medium mb-2">How to earn points:</p>
                 <p>+10 pts — Report a found item</p>
-                <p>+20 pts — Successful item return (claim approved)</p>
+                <p>+20 pts — Return an item to its owner</p>
+                <p>+10 pts — Recover your own lost item</p>
                 <p>+5 pts — Referral bonus</p>
             </div>
         </div>

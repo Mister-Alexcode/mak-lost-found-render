@@ -49,7 +49,7 @@
         <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
             <p class="text-green-800 font-bold text-lg">Claim Approved!</p>
             <p class="text-green-700 text-sm mt-1">
-                Your item has been marked as returned. You earned 20 reward points!
+                Your item has been marked as returned. You earned 10 reward points!
             </p>
         </div>
         @endif

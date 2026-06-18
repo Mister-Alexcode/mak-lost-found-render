@@ -65,29 +65,40 @@ class AdminController extends Controller
         $claim->match->foundItem->update(['status' => 'returned']);
         $claim->match->update(['match_status' => 'confirmed']);
 
-        // Award +20 points to claimant (successful return)
+        // Award points: the finder gets the bigger reward for returning the
+        // item; the claimant (owner) gets a smaller bonus for using the system.
         $claimant = $claim->claimant;
-        $claimant->increment('reward_points', 20);
+        $finder   = $claim->match->foundItem->user;
+
+        $finder->increment('reward_points', 20);
         Reward::create([
-            'user_id'       => $claimant->id,
+            'user_id'       => $finder->id,
             'claim_id'      => $claim->id,
             'action_type'   => 'successful_return',
             'points_awarded'=> 20,
+        ]);
+
+        $claimant->increment('reward_points', 10);
+        Reward::create([
+            'user_id'       => $claimant->id,
+            'claim_id'      => $claim->id,
+            'action_type'   => 'item_recovered',
+            'points_awarded'=> 10,
         ]);
 
         // Notify claimant
         NotificationDispatcher::send(
             $claimant,
             'claim_approved',
-            'Your claim has been approved! Your item has been marked as returned. You earned 20 reward points.',
+            'Your claim has been approved! Your item has been marked as returned. You earned 10 reward points.',
             route('claims.show', $claim->id)
         );
 
         // Notify finder
         NotificationDispatcher::send(
-            $claim->match->foundItem->user,
+            $finder,
             'claim_approved',
-            'The claim for the item you found (' . $claim->match->foundItem->item_name . ') has been approved. Thank you for your honesty!',
+            'The claim for the item you found (' . $claim->match->foundItem->item_name . ') has been approved. You earned 20 reward points for your honesty!',
             route('found-items.show', $claim->match->foundItem->id)
         );
 

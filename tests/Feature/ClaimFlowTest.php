@@ -123,13 +123,20 @@ class ClaimFlowTest extends TestCase
         $this->assertEquals('returned', $match->foundItem->fresh()->status);
         $this->assertEquals('confirmed', $match->fresh()->match_status);
 
-        // 20 points awarded + Reward record + notifications dispatched
-        $this->assertEquals(20, $owner->fresh()->reward_points);
+        // Finder earns +20 for the return; owner earns +10 for using the system
+        $this->assertEquals(20, $finder->fresh()->reward_points);
+        $this->assertEquals(10, $owner->fresh()->reward_points);
         $this->assertDatabaseHas('rewards', [
-            'user_id'        => $owner->id,
+            'user_id'        => $finder->id,
             'claim_id'       => $claim->id,
             'action_type'    => 'successful_return',
             'points_awarded' => 20,
+        ]);
+        $this->assertDatabaseHas('rewards', [
+            'user_id'        => $owner->id,
+            'claim_id'       => $claim->id,
+            'action_type'    => 'item_recovered',
+            'points_awarded' => 10,
         ]);
         $this->assertTrue(
             ItemNotification::where('user_id', $owner->id)->where('type', 'claim_approved')->exists()
@@ -187,7 +194,9 @@ class ClaimFlowTest extends TestCase
         $this->assertEquals('returned', $match->lostItem->fresh()->status);
         $this->assertEquals('returned', $match->foundItem->fresh()->status);
         $this->assertEquals('confirmed', $match->fresh()->match_status);
-        $this->assertEquals(20, $owner->fresh()->reward_points);
+        // Finder earns +20 for the return; owner earns +10 for using the system
+        $this->assertEquals(20, $finder->fresh()->reward_points);
+        $this->assertEquals(10, $owner->fresh()->reward_points);
         $this->assertDatabaseHas('claims', [
             'match_id'     => $match->id,
             'claim_status' => 'approved',

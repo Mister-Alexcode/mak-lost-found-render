@@ -116,37 +116,43 @@ class ClaimController extends Controller
             'resolved_at'          => now(),
         ]);
 
-        // Award points
-        $owner = $match->lostItem->user;
-        $owner->increment('reward_points', 20);
+        // Award points: the finder gets the bigger reward for returning the
+        // item; the owner gets a smaller bonus for using the system.
+        $owner  = $match->lostItem->user;
+        $finder = $match->foundItem->user;
+
+        $finder->increment('reward_points', 20);
         Reward::create([
-            'user_id'        => $owner->id,
+            'user_id'        => $finder->id,
             'claim_id'       => $claim->id,
             'action_type'    => 'successful_return',
             'points_awarded' => 20,
         ]);
 
+        $owner->increment('reward_points', 10);
+        Reward::create([
+            'user_id'        => $owner->id,
+            'claim_id'       => $claim->id,
+            'action_type'    => 'item_recovered',
+            'points_awarded' => 10,
+        ]);
+
         // Notify both parties
-        $other = $isOwner ? $match->foundItem->user : $match->lostItem->user;
         NotificationDispatcher::send(
-            $other,
+            $finder,
             'item_returned',
-            Auth::user()->name . ' confirmed the return of ' . $match->lostItem->item_name . '. Thank you!',
-            route('messages.show', $match->id)
+            'The item you found (' . $match->foundItem->item_name . ') was returned to its owner. You earned 20 reward points for your honesty!',
+            route('found-items.show', $match->foundItem->id)
         );
 
-        $selfMessage = $isOwner
-            ? 'You confirmed the return of ' . $match->lostItem->item_name . '. You earned 20 reward points!'
-            : 'You confirmed the return of ' . $match->lostItem->item_name . '. Thank you for being honest!';
-
         NotificationDispatcher::send(
-            Auth::user(),
+            $owner,
             'item_returned',
-            $selfMessage,
+            'Your ' . $match->lostItem->item_name . ' has been marked as returned. You earned 10 reward points!',
             route('lost-items.show', $match->lostItem->id)
         );
 
-        return back()->with('success', 'Item marked as returned! 20 reward points awarded.');
+        return back()->with('success', 'Item marked as returned! The finder earned 20 points and the owner earned 10.');
     }
 
     /**
